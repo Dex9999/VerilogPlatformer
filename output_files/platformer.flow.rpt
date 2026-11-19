@@ -1,5 +1,5 @@
 Flow report for platformer
-Mon Nov 16 20:37:06 2026
+Wed Nov 18 19:39:02 2026
 Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 
 
@@ -41,16 +41,16 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +---------------------------------+------------------------------------------------+
-; Flow Status                     ; Successful - Mon Nov 16 20:37:00 2026          ;
+; Flow Status                     ; Successful - Wed Nov 18 19:38:56 2026          ;
 ; Quartus Prime Version           ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
 ; Revision Name                   ; platformer                                     ;
 ; Top-level Entity Name           ; platformer                                     ;
 ; Family                          ; Cyclone V                                      ;
 ; Device                          ; 5CSEMA5F31C6                                   ;
 ; Timing Models                   ; Final                                          ;
-; Logic utilization (in ALMs)     ; 73 / 32,070 ( < 1 % )                          ;
-; Total registers                 ; 49                                             ;
-; Total pins                      ; 34 / 457 ( 7 % )                               ;
+; Logic utilization (in ALMs)     ; 244 / 32,070 ( < 1 % )                         ;
+; Total registers                 ; 191                                            ;
+; Total pins                      ; 54 / 457 ( 12 % )                              ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 57,600 / 4,065,280 ( 1 % )                     ;
 ; Total DSP Blocks                ; 0 / 87 ( 0 % )                                 ;
@@ -68,7 +68,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/16/2026 20:36:06 ;
+; Start date & time ; 11/18/2026 19:37:45 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; platformer          ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id                        ;
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID               ; 93181000678414.179487936618852         ; --            ; --          ; --                                ;
+; COMPILER_SIGNATURE_ID               ; 93181000663294.179504866507368         ; --            ; --          ; --                                ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_timing           ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_boundary_scan    ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_signal_integrity ;
@@ -100,11 +100,11 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:07     ; 1.0                     ; 4886 MB             ; 00:00:16                           ;
-; Fitter               ; 00:00:39     ; 1.0                     ; 6973 MB             ; 00:01:52                           ;
-; Assembler            ; 00:00:06     ; 1.0                     ; 5241 MB             ; 00:00:05                           ;
-; Timing Analyzer      ; 00:00:05     ; 1.2                     ; 5377 MB             ; 00:00:06                           ;
-; Total                ; 00:00:57     ; --                      ; --                  ; 00:02:19                           ;
+; Analysis & Synthesis ; 00:00:08     ; 1.0                     ; 4891 MB             ; 00:00:16                           ;
+; Fitter               ; 00:00:55     ; 1.0                     ; 6973 MB             ; 00:02:49                           ;
+; Assembler            ; 00:00:06     ; 1.0                     ; 5242 MB             ; 00:00:05                           ;
+; Timing Analyzer      ; 00:00:05     ; 1.2                     ; 5394 MB             ; 00:00:06                           ;
+; Total                ; 00:01:14     ; --                      ; --                  ; 00:03:16                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -113,10 +113,10 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+------------------+------------+------------+----------------+
 ; Module Name          ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
 +----------------------+------------------+------------+------------+----------------+
-; Analysis & Synthesis ; BA3135WS15       ; Windows 10 ; 10.0       ; x86_64         ;
-; Fitter               ; BA3135WS15       ; Windows 10 ; 10.0       ; x86_64         ;
-; Assembler            ; BA3135WS15       ; Windows 10 ; 10.0       ; x86_64         ;
-; Timing Analyzer      ; BA3135WS15       ; Windows 10 ; 10.0       ; x86_64         ;
+; Analysis & Synthesis ; BA3135WS03       ; Windows 10 ; 10.0       ; x86_64         ;
+; Fitter               ; BA3135WS03       ; Windows 10 ; 10.0       ; x86_64         ;
+; Assembler            ; BA3135WS03       ; Windows 10 ; 10.0       ; x86_64         ;
+; Timing Analyzer      ; BA3135WS03       ; Windows 10 ; 10.0       ; x86_64         ;
 +----------------------+------------------+------------+------------+----------------+
 
 

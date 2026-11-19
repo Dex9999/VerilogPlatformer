@@ -1,78 +1,170 @@
-
 `default_nettype none
-
-
-module platformer(CLOCK_50, KEY, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
+module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
 
     parameter RESOLUTION = "160x120"; // "640x480" "320x240" "160x120"
-
-    // specify the color depth. This design supports depths of 9, 6, and 3
-    parameter COLOR_DEPTH = 3; // 9 6 3
-
-    // specify the number of bits needed for an X (column) pixel coordinate on the VGA display
+    parameter COLOR_DEPTH = 3;        // 9 6 3
     parameter nX = 8;
-    // specify the number of bits needed for a Y (row) pixel coordinate on the VGA display
     parameter nY = 7;
 
-    
+    // scene layout 
+    parameter YSCREEN = 120;
+    parameter GROUND_HEIGHT = 8;                 
+    parameter BG_COLOR = 3'b000;                 
+                                                 
+    localparam GROUND_Y = YSCREEN - GROUND_HEIGHT;   // first ground row (112)
+    localparam PLAYER_Y = GROUND_Y - 1 - 6;          // sprite is 13 tall, centred on Y -> bottom row = Y + 6
 
-	input [3:0] KEY;
-	input wire CLOCK_50;	
+    // bird
+    parameter BIRD_KK = 19;                      // bird speed: smaller = faster 
+    localparam [6:0] BIRD_Y = 7'd30;             // row the bird flies on
 
-	output wire [7:0] VGA_R;
-	output wire [7:0] VGA_G;
-	output wire [7:0] VGA_B;
-	output wire VGA_HS;
-	output wire VGA_VS;
-	output wire VGA_BLANK_N;
-	output wire VGA_SYNC_N;
-	output wire VGA_CLK;	
-	
-    wire Resetn;       
+    input [3:0] KEY;
+    input [9:0] SW;
+    output wire [9:0] LEDR;
+    input wire CLOCK_50;
+
+    output wire [7:0] VGA_R;
+    output wire [7:0] VGA_G;
+    output wire [7:0] VGA_B;
+    output wire VGA_HS;
+    output wire VGA_VS;
+    output wire VGA_BLANK_N;
+    output wire VGA_SYNC_N;
+    output wire VGA_CLK;
+
+    wire Resetn;
     assign Resetn = KEY[0];
 
-    // The signals below. we need wires for every single new screen we make.
-	wire [nX-1:0] go_x;    // x coordinate 
-	wire [nY-1:0] go_y;    // y coordinate
-	wire [COLOR_DEPTH-1:0] go_color;
-	wire go_write, go_done; 
+    // Game over screen while SW[0] = 1.
+    wire [nX-1:0] go_x;
+    wire [nY-1:0] go_y;
+    wire [COLOR_DEPTH-1:0] go_color;
+    wire go_write, go_done;
 
-    game_over GO (CLOCK_50, Resetn, 1'b1, go_x, go_y, go_color, go_write, go_done);
+    game_over GO (CLOCK_50, Resetn, SW[0], go_x, go_y, go_color, go_write, go_done);
 
+    wire [7:0] bird_x;
+    wire [6:0] bird_y;
+    wire [2:0] bird_color;
+    wire bird_write;
+    wire bird_req, bird_done, bird_busy;
+    wire [nX-1:0] bird_obj_x;
+    wire [nY-1:0] bird_obj_y;
 
+    wire bird_resetn = Resetn & SW[1] & ~SW[0];
 
+    bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR)) BIRD (
+        bird_resetn, CLOCK_50, 1'b1, bird_req, bird_x, bird_y, bird_color, bird_write,
+   
+        1'b1, bird_done, bird_busy, BIRD_Y, bird_obj_x, bird_obj_y);
 
+    wire [nX-1:0] sc_x;
+    wire [nY-1:0] sc_y;
+    wire [COLOR_DEPTH-1:0] sc_color;
+    wire sc_write, sc_done;
 
-    // For game logic, chooser to which one goes into vga adapter, fsm
-    wire [7:0] adp_x = go_x;
-    wire [6:0] adp_y = go_y;
-    wire [COLOR_DEPTH-1:0] adp_color = go_color;
-    wire adp_write = go_write;
+    wire scene_resetn = Resetn & ~SW[0] & ~SW[1];
+    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR)) SCENE
+        (CLOCK_50, scene_resetn, sc_x, sc_y, sc_color, sc_write, sc_done);
 
+    
+    wire [7:0] player_x;
+    wire [6:0] player_y;
+    wire [2:0] player_color;
+    wire player_write;
 
-    // connect to VGA controller
+    wire player_resetn = Resetn & sc_done;
+
+    // KEY[1] = right, KEY[3] = left, KEY[2] = yell
+    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR)) PLAYER_INST (
+        .Resetn(player_resetn),
+        .Clock(CLOCK_50),
+        .key_right(~KEY[1]),
+        .key_left(~KEY[3]),
+        .yell_pressed(~KEY[2]),
+        .VGA_x(player_x),
+        .VGA_y(player_y),
+        .VGA_color(player_color),
+        .VGA_write(player_write)
+    );
+
+    assign LEDR = SW;
+
+    // VGA adapter :
+    //   SW[0] = 1  -> game over screen
+    //   SW[1] = 1  -> bird
+    //   scene not finished drawing   -> scene_draw (background + ground)
+    //   otherwise -> player
+    wire sel_go    = SW[0];
+    wire sel_bird  = ~SW[0] & SW[1];
+    wire sel_scene = ~SW[0] & ~SW[1] & ~sc_done;
+
+    wire [7:0] adp_x = sel_go ? go_x : (sel_bird ? bird_x : (sel_scene ? sc_x : player_x));
+    wire [6:0] adp_y = sel_go ? go_y : (sel_bird ? bird_y : (sel_scene ? sc_y : player_y));
+    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_bird ? bird_color : (sel_scene ? sc_color : player_color));
+    wire adp_write = sel_go ? go_write : (sel_bird ? bird_write : (sel_scene ? sc_write : player_write));
+
     vga_adapter VGA (
-			.resetn(Resetn),
-			.clock(CLOCK_50),
-			.color(adp_color),
-			.x(adp_x),
-			.y(adp_y),
-			.write(adp_write),
-			.VGA_R(VGA_R),
-			.VGA_G(VGA_G),
-			.VGA_B(VGA_B),
-			.VGA_HS(VGA_HS),
-			.VGA_VS(VGA_VS),
-			.VGA_BLANK_N(VGA_BLANK_N),
-			.VGA_SYNC_N(VGA_SYNC_N),
-			.VGA_CLK(VGA_CLK));
-		defparam VGA.RESOLUTION = RESOLUTION;
-        // choose background image according to resolution and color depth
-		defparam VGA.BACKGROUND_IMAGE = "./MIF/black.mif";
-		defparam VGA.COLOR_DEPTH = COLOR_DEPTH;
+            .resetn(Resetn),
+            .clock(CLOCK_50),
+            .color(adp_color),
+            .x(adp_x),
+            .y(adp_y),
+            .write(adp_write),
+            .VGA_R(VGA_R),
+            .VGA_G(VGA_G),
+            .VGA_B(VGA_B),
+            .VGA_HS(VGA_HS),
+            .VGA_VS(VGA_VS),
+            .VGA_BLANK_N(VGA_BLANK_N),
+            .VGA_SYNC_N(VGA_SYNC_N),
+            .VGA_CLK(VGA_CLK));
+        defparam VGA.RESOLUTION = RESOLUTION;
+        defparam VGA.BACKGROUND_IMAGE = "./MIF/background.mif";
+        defparam VGA.COLOR_DEPTH = COLOR_DEPTH;
 
 endmodule
 
+
+// clears to black + ground
+module scene_draw (clock, resetn, x, y, color, write, done);
+    parameter GROUND_Y = 112;
+    parameter BG_COLOR = 3'b000;
+    parameter GROUND_COLOR     = 3'b110;   // ground body (red/brown)
+
+    input clock, resetn;
+    output reg [7:0] x;
+    output reg [6:0] y;
+    output wire [2:0] color;
+    output wire write;
+    output reg done;
+
+    always @(posedge clock)
+    begin
+        if (resetn == 0)
+        begin
+            x <= 8'd0;
+            y <= 7'd0;
+            done <= 1'b0;
+        end
+        else if (done == 0)
+        begin
+            if (x == 8'd159)
+            begin
+                x <= 8'd0;
+                if (y == 7'd119)
+                    done <= 1'b1;
+                else
+                    y <= y + 1'b1;
+            end
+            else
+                x <= x + 1'b1;
+        end
+    end
+
+    assign color = (y <  GROUND_Y) ? BG_COLOR : GROUND_COLOR;
+    assign write = ~done & resetn;
+endmodule
 
 module game_over (clock, resetn, start, x, y, color, write, done);
 
@@ -99,26 +191,26 @@ module game_over (clock, resetn, start, x, y, color, write, done);
                 x <= 0;
                 if(y == 7'd119)
                     done <= 1;
-                else 
+                else
                     y <= y + 1;
             end
-            else    
+            else
                 x <= x + 1;
         end
     end
 
 
     wire letter;
-    
+
     // i am working in 4x4 blocks for the game over letters so i can work on a 40 by 30 grid instead
     wire [5:0] cx = x[7:2];
-    wire [4:0] cy = y[6:2]; 
+    wire [4:0] cy = y[6:2];
 
 
     assign letter =
-    // G
+    // G  (crossbar fixed: was `cx == 9 && cx == 10`, which can never be true)
     (cy == 5 && cx >= 7 && cx <= 11) || (cx == 7 && cy >= 6 && cy <= 11) || (cy == 11 && cx >= 8 && cx <= 11)
-    || (cx == 11 && cy >= 9 && cy <= 10) || (cy == 9 && cx == 10)
+    || (cx == 11 && cy >= 9 && cy <= 10) || (cy == 8 && cx >= 9 && cx <= 11)
     // A
     || (cy == 5 && cx >= 15 && cx <= 17) || (cx == 14 && cy >= 6 && cy <= 11)
     || (cx == 18 && cy >= 6 && cy <= 11) || (cy == 8 && cx >= 14 && cx <= 18)
@@ -135,7 +227,7 @@ module game_over (clock, resetn, start, x, y, color, write, done);
     || (cx == 14 && cy >= 17 && cy <= 20) || (cx == 18 && cy >= 17 && cy <= 20)
     || (cx == 15 && cy >= 21 && cy <= 22) || (cx == 17 && cy >= 21 && cy <= 22)
     || (cy == 23 && cx == 16)
-    // E 
+    // E
     || (cx == 21 && cy >= 17 && cy <= 23) || (cy == 17 && cx >= 21 && cx <= 25)
     || (cy == 20 && cx >= 21 && cx <= 23) || (cy == 23 && cx >= 21 && cx <= 25)
     // R
@@ -154,5 +246,629 @@ endmodule
 //module platforms()
 
 //module birds()
+// implements a moving colored object
+module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y);
 
-//module wall()
+    parameter RESOLUTION = "160x120"; 
+    parameter nX = 8;
+    parameter nY = 7;
+    parameter COLOR_DEPTH = 3;
+    parameter XSCREEN = 160;
+    parameter YSCREEN = 120;
+    parameter XDIM = 11, YDIM = 7; // object's width and height
+    parameter sky_color = 3'b001; 
+    parameter KK = 24; // controls animation speed (use 16 for DESim, 5 for ModelSim)
+
+    // state codes
+    parameter A = 4'b0000,
+              B = 4'b0001,
+              C = 4'b0010,
+              D = 4'b0011,
+              E = 4'b0100,
+              F = 4'b0101,
+              G = 4'b0110,
+              H = 4'b0111,
+              I = 4'b1000,
+              J = 4'b1001,
+              K = 4'b1010,
+              L = 4'b1011,
+              M = 4'b1100, //done
+              N = 4'b1101; //wait for grant before the first draw
+
+
+
+
+    input wire gnt;
+    output reg req;
+    input wire start;
+    input wire [nY-1:0] y_in;      // row to use for this flight (sampled when start = 1)
+    output wire busy;              // 1 from start until the FSM is idle again
+    output wire [nX-1:0] obj_x;    // current position (valid while busy, holds last value after)
+    output wire [nY-1:0] obj_y;
+    output reg done;
+    input wire resetn, clock;
+	output wire [7:0] VGA_x; 
+	output wire [6:0] VGA_y; 
+	output wire [2:0] VGA_color;  
+    output wire VGA_write; 
+
+
+
+	wire [7:0] X, XC, X0;    // used to traverse the object's width
+	wire [6:0] Y, YC, Y0;    // used to traverse the object's height
+    wire [KK-1:0] slow;     // used to synchronize the object's speed using a counter
+
+
+    reg Lx, Ly, Ex, Lxc, Lyc, Exc, Eyc; // load and enable signals for the object's 
+                                        // location (x,y) and the counters that traverse 
+                                        // the object's pixels (XC, YC)
+    wire sync;    // sync is for the slow counter
+    reg erase;    // erase is used to erase the object
+    reg [3:0] y_Q, Y_D; // FSM for controlling drawing/erasing of the object
+    reg write;          // used to write to a pixel
+
+    //bird colours
+    wire is_yellow = (XC == 0 && YC == 4) || (XC == 1 && YC >= 3 && YC <= 4);
+    wire is_black = (XC == 2 && YC == 3);
+    wire is_white = ( YC == 0 && XC >= 7 && XC <= 9 )
+                    || ( YC == 1 && XC >= 6 && XC <= 8 )
+                    || ( YC == 2 && ((XC >= 2 && XC <= 3) || (XC >= 5 && XC <= 7)) )
+                    || ( YC == 3 && XC >= 3 && XC <= 10 )
+                    || ( YC == 4 && XC >= 2 && XC <= 9 )
+                    || ( YC == 5 && XC >= 3 && XC <= 7 )
+                    || ( YC == 6 && XC >= 4 && XC <= 6 );
+
+    wire px_solid = is_white | is_yellow | is_black;
+    wire [2:0] px_color = is_yellow ? 3'b110 : is_black ? 3'b000 : 3'b111;
+
+
+    assign X0 = XSCREEN - XDIM;   // enters at the right edge
+    assign Y0 = y_in;
+
+    assign busy  = (y_Q != A);
+    assign obj_x = X;
+    assign obj_y = Y;
+
+
+    assign VGA_x = X + XC;                          // pixel x coordinate
+    assign VGA_y = Y + YC;                          // pixel y coordinate
+    assign VGA_color = erase == 0 ? px_color : sky_color;    // pixel color to draw/erase
+    assign VGA_write = write;                       // pixel write control
+
+
+        // X moves left: enable = Ex, direction 0 = count down
+    UpDn_count U2 (X0, clock, resetn, Ex, Lx, 1'b0, X);
+        defparam U2.n = nX;
+
+    // Y only loads: enable tied to 0
+    UpDn_count U1 (Y0, clock, resetn, 1'b0, Ly, 1'b0, Y);
+        defparam U1.n = nY;
+
+    // pixel counters walk through the sprite box
+    UpDn_count U3 ({nX{1'b0}}, clock, resetn, Exc, Lxc, 1'b1, XC);
+        defparam U3.n = nX;
+
+    UpDn_count U4 ({nY{1'b0}}, clock, resetn, Eyc, Lyc, 1'b1, YC);
+        defparam U4.n = nY;
+
+    // speed counter
+    Up_count U6 (clock, resetn, slow);
+        defparam U6.n = KK;
+    assign sync = (slow == {KK{1'b1}});
+
+    // FSM Algorithm:
+    // 1. draw object
+    // 2. wait for object's delay time
+    // 3. request to draw, wait for grant
+    // 4. erase object (maintain request)
+    // 5. move object, check for boundary conditions (maintain request)
+    // 6. draw object (maintain request)
+    // 7. release request, goto 2.
+
+    always @ (*)
+        case (y_Q)
+            A:  if (start) Y_D = N; else Y_D = A;                    // initialize counters, registers
+
+            N:  if (!gnt) Y_D = N;              // wait for VGA grant before the first draw
+                else Y_D = B;
+
+            B:  if (XC != XDIM-1) Y_D = B;      // initial draw, done once
+                else Y_D = C;
+            C:  if (YC != YDIM-1) Y_D = B;
+                else Y_D = D;
+
+            D:  if (!sync) Y_D = D;             // wait for object's delay time
+                else Y_D = E;
+            E:  if (!gnt) Y_D = E;              // wait for VGA grant
+                else Y_D = F;
+
+            F:  if (XC != XDIM-1) Y_D = F;      // erase object
+                else Y_D = G;
+            G:  if (YC != YDIM-1) Y_D = F;
+                else Y_D = H;
+
+            H:  if (X == 0) Y_D = M;  
+            else Y_D = I;                      // move the object
+            I:  Y_D = J;
+
+            J:  if (XC != XDIM-1) Y_D = J;      // draw the object
+                else Y_D = K;
+            K:  if (YC != YDIM-1) Y_D = J;
+                else Y_D = L;
+            L:  Y_D = D;
+
+            M: Y_D = A;
+
+            default: Y_D = A;
+        endcase
+
+    always @ (*)
+    begin
+        // default assignments
+        Lx = 1'b0; Ly = 1'b0; Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; done = 1'b0;
+        erase = 1'b0; write = 1'b0; Ex = 1'b0; req = 1'b0;
+        case (y_Q)
+            A:  begin Lx = start; Ly = start; Lxc = 1'b1; Lyc = 1'b1; end // load position only on start
+
+            N:  req = 1'b1; // request the adapter for the first draw
+
+            B:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end   // color a pixel, incr XC
+            C:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end     // reload XC, incr YC
+
+            D:  Lyc = 1'b1; // reload YC
+            E:  req = 1'b1; // request a drawing cycle
+
+            // erase the object
+            F:  begin req = 1'b1; Exc = 1'b1; erase = 1'b1; write = 1'b1; end
+            G:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+
+            H:  begin req = 1'b1; Lyc = 1'b1; end
+
+            // move the object
+            I:  begin req = 1'b1; Ex = 1'b1; end
+
+            // draw the object
+            J:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end
+            K:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+            L:  Lyc = 1'b1; // reload YC, and release the request
+
+            M: begin done = 1'b1; end
+        endcase
+    end
+
+    // FSM FFs 
+    always @(posedge clock)
+        if (resetn == 0)
+            y_Q <= A;
+        else
+            y_Q <= Y_D;
+
+
+
+endmodule
+
+// up/down counter with reset, enable, and load controls
+module UpDn_count (R, Clock, Resetn, E, L, UpDn, Q);
+    parameter n = 8;
+    input wire [n-1:0] R;
+    input wire Clock, Resetn, E, L, UpDn;
+    output reg [n-1:0] Q;
+
+    always @ (posedge Clock)
+        if (Resetn == 0)
+            Q <= 0;
+        else if (L == 1)
+            Q <= R;
+        else if (E)
+            if (UpDn == 1)
+                Q <= Q + 1'b1;
+            else
+                Q <= Q - 1'b1;
+endmodule
+
+// counter
+module Up_count (Clock, Resetn, Q);
+    parameter n = 8;
+    input wire Clock, Resetn;
+    output reg [n-1:0] Q;
+
+    always @ (posedge Clock)
+        if (Resetn == 0)
+            Q <= 'b0;
+        else 
+            Q <= Q + 1'b1;
+endmodule
+
+// bird right
+
+// implements a moving colored object
+module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y);
+
+    parameter RESOLUTION = "160x120"; 
+    parameter nX = 8;
+    parameter nY = 7;
+    parameter COLOR_DEPTH = 3;
+    parameter XSCREEN = 160;
+    parameter YSCREEN = 120;
+    parameter XDIM = 11, YDIM = 7; // object's width and height
+    parameter sky_color = 3'b001; 
+    parameter KK = 24; // controls animation speed (use 16 for DESim, 5 for ModelSim)
+
+    // state codes
+    parameter A = 4'b0000,
+              B = 4'b0001,
+              C = 4'b0010,
+              D = 4'b0011,
+              E = 4'b0100,
+              F = 4'b0101,
+              G = 4'b0110,
+              H = 4'b0111,
+              I = 4'b1000,
+              J = 4'b1001,
+              K = 4'b1010,
+              L = 4'b1011,
+              M = 4'b1100, //done
+              N = 4'b1101; //wait for grant before the first draw
+
+
+
+
+    input wire gnt;
+    output reg req;
+    input wire start;
+    input wire [nY-1:0] y_in;      // row to use for this flight (sampled when start = 1)
+    output wire busy;              // 1 from start until the FSM is idle again
+    output wire [nX-1:0] obj_x;    // current position (valid while busy, holds last value after)
+    output wire [nY-1:0] obj_y;
+    output reg done;
+    input wire resetn, clock;
+	output wire [7:0] VGA_x; 
+	output wire [6:0] VGA_y; 
+	output wire [2:0] VGA_color;  
+    output wire VGA_write; 
+
+
+
+	wire [7:0] X, XC, X0;    // used to traverse the object's width
+	wire [6:0] Y, YC, Y0;    // used to traverse the object's height
+    wire [KK-1:0] slow;     // used to synchronize the object's speed using a counter
+
+
+    reg Lx, Ly, Ex, Lxc, Lyc, Exc, Eyc; // load and enable signals for the object's 
+                                        // location (x,y) and the counters that traverse 
+                                        // the object's pixels (XC, YC)
+    wire sync;    // sync is for the slow counter
+    reg erase;    // erase is used to erase the object
+    reg [3:0] y_Q, Y_D; // FSM for controlling drawing/erasing of the object
+    reg write;          // used to write to a pixel
+
+    //bird colours
+    wire is_yellow = (XC == 10 && YC == 4) || (XC == 9 && YC >= 3 && YC <= 4);
+    wire is_black = (XC == 8 && YC == 3);
+    wire is_white = ( YC == 0 && XC >= 1 && XC <= 3 )
+                    || ( YC == 1 && XC >= 2 && XC <= 4 )
+                    || ( YC == 2 && ((XC >= 3 && XC <= 5) || (XC >= 7 && XC <= 8)) )
+                    || ( YC == 3 && XC >= 0 && XC <= 7 )
+                    || ( YC == 4 && XC >= 1 && XC <= 8 )
+                    || ( YC == 5 && XC >= 3 && XC <= 7 )
+                    || ( YC == 6 && XC >= 4 && XC <= 6 );
+
+    wire px_solid = is_white | is_yellow | is_black;
+    wire [2:0] px_color = is_yellow ? 3'b110 : is_black ? 3'b000 : 3'b111;
+
+
+    assign X0 = 8'd0;             // enters at the left edge
+    assign Y0 = y_in;
+
+    assign busy  = (y_Q != A);
+    assign obj_x = X;
+    assign obj_y = Y;
+
+
+    assign VGA_x = X + XC;                          // pixel x coordinate
+    assign VGA_y = Y + YC;                          // pixel y coordinate
+    assign VGA_color = erase == 0 ? px_color : sky_color;    // pixel color to draw/erase
+    assign VGA_write = write;                       // pixel write control
+
+
+        // X moves right: enable = Ex, direction 1 = count up
+    UpDn_count U2 (X0, clock, resetn, Ex, Lx, 1'b1, X);
+        defparam U2.n = nX;
+
+    // Y only loads: enable tied to 0
+    UpDn_count U1 (Y0, clock, resetn, 1'b0, Ly, 1'b0, Y);
+        defparam U1.n = nY;
+
+    // pixel counters walk through the sprite box
+    UpDn_count U3 ({nX{1'b0}}, clock, resetn, Exc, Lxc, 1'b1, XC);
+        defparam U3.n = nX;
+
+    UpDn_count U4 ({nY{1'b0}}, clock, resetn, Eyc, Lyc, 1'b1, YC);
+        defparam U4.n = nY;
+
+    // speed counter
+    Up_count U6 (clock, resetn, slow);
+        defparam U6.n = KK;
+    assign sync = (slow == {KK{1'b1}});
+
+    // FSM Algorithm:
+    // 1. draw object
+    // 2. wait for object's delay time
+    // 3. request to draw, wait for grant
+    // 4. erase object (maintain request)
+    // 5. move object, check for boundary conditions (maintain request)
+    // 6. draw object (maintain request)
+    // 7. release request, goto 2.
+
+    always @ (*)
+        case (y_Q)
+            A:  if (start) Y_D = N; else Y_D = A;                    // initialize counters, registers
+
+            N:  if (!gnt) Y_D = N;              // wait for VGA grant before the first draw
+                else Y_D = B;
+
+            B:  if (XC != XDIM-1) Y_D = B;      // initial draw, done once
+                else Y_D = C;
+            C:  if (YC != YDIM-1) Y_D = B;
+                else Y_D = D;
+
+            D:  if (!sync) Y_D = D;             // wait for object's delay time
+                else Y_D = E;
+            E:  if (!gnt) Y_D = E;              // wait for VGA grant
+                else Y_D = F;
+
+            F:  if (XC != XDIM-1) Y_D = F;      // erase object
+                else Y_D = G;
+            G:  if (YC != YDIM-1) Y_D = F;
+                else Y_D = H;
+
+            H:  if (X >= XSCREEN - XDIM) Y_D = M;  
+            else Y_D = I;                      // move the object
+            I:  Y_D = J;
+
+            J:  if (XC != XDIM-1) Y_D = J;      // draw the object
+                else Y_D = K;
+            K:  if (YC != YDIM-1) Y_D = J;
+                else Y_D = L;
+            L:  Y_D = D;
+
+            M: Y_D = A;
+
+            default: Y_D = A;
+        endcase
+
+    always @ (*)
+    begin
+        // default assignments
+        Lx = 1'b0; Ly = 1'b0; Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; done = 1'b0;
+        erase = 1'b0; write = 1'b0; Ex = 1'b0; req = 1'b0;
+        case (y_Q)
+            A:  begin Lx = start; Ly = start; Lxc = 1'b1; Lyc = 1'b1; end // load position only on start
+
+            N:  req = 1'b1; // request the adapter for the first draw
+
+            B:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end   // color a pixel, incr XC
+            C:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end     // reload XC, incr YC
+
+            D:  Lyc = 1'b1; // reload YC
+            E:  req = 1'b1; // request a drawing cycle
+
+            // erase the object
+            F:  begin req = 1'b1; Exc = 1'b1; erase = 1'b1; write = 1'b1; end
+            G:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+
+            H:  begin req = 1'b1; Lyc = 1'b1; end
+
+            // move the object
+            I:  begin req = 1'b1; Ex = 1'b1; end
+
+            // draw the object
+            J:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end
+            K:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+            L:  Lyc = 1'b1; // reload YC, and release the request
+
+            M: begin done = 1'b1; end
+        endcase
+    end
+
+    // FSM FFs 
+    always @(posedge clock)
+        if (resetn == 0)
+            y_Q <= A;
+        else
+            y_Q <= Y_D;
+
+
+
+endmodule
+
+
+// PLAYER object
+module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, VGA_y, VGA_color, VGA_write);
+    parameter XOFFSET = 80;
+    parameter YOFFSET = 60;
+    parameter BOX_SIZE_X = 11;
+    parameter BOX_SIZE_Y = 13;
+    parameter XSCREEN = 160;
+    parameter KK = 20;
+    parameter BG_COLOR = 3'b000;
+
+    parameter A = 3'b000, B = 3'b001, C = 3'b010, D = 3'b011, E = 3'b100,
+              F = 3'b101, G = 3'b110, H = 3'b111;
+
+    input wire Resetn, Clock;
+    input wire key_right;    // KEY[1] 
+    input wire key_left;     // KEY[3] 
+    input wire yell_pressed; // KEY[2] 
+    output wire [7:0] VGA_x;
+    output wire [6:0] VGA_y;
+    output wire [2:0] VGA_color;
+    output wire VGA_write;
+
+    wire [7:0] X, X0;
+    wire [6:0] Y, Y0;
+    wire [3:0] XC;
+    wire [3:0] YC;
+    reg write, Lxc, Lyc, Exc, Eyc;
+    reg erase;
+    reg Lx, Ly, Ex;
+    reg [2:0] y_Q, Y_D;
+
+    reg [2:0] obj_color;
+
+    assign X0 = XOFFSET;
+    assign Y0 = YOFFSET;
+
+    // fpga keys to move (placeholder)
+    wire move_dir = key_right;
+
+    // clamp at screen edge
+    localparam HALF_X = BOX_SIZE_X >> 1;
+    wire can_right = (X + HALF_X + 1 < XSCREEN);
+    wire can_left  = (X > HALF_X);
+    wire move_ok = (key_right && can_right) || (key_left && !key_right && can_left);
+
+    // redraw triggers: first draw, movement, or yell change
+    reg first;        // 1 until the first draw has happened
+    reg yell_drawn;   // yell state used for the current draw (latched in E)
+    wire yell_changed = (yell_pressed != yell_drawn);
+    wire redraw = first | move_ok | yell_changed;
+
+    UpDn_count UX (X0, Clock, Resetn, Ex, Lx, move_dir, X);
+        defparam UX.n = 8;
+    UpDn_count UY (Y0, Clock, Resetn, 1'b0, Ly, 1'b0, Y);
+        defparam UY.n = 7;
+
+    UpDn_count U3 (4'd0, Clock, Resetn, Exc, Lxc, 1'b1, XC);
+        defparam U3.n = 4;
+    UpDn_count U4 (4'd0, Clock, Resetn, Eyc, Lyc, 1'b1, YC);
+        defparam U4.n = 4;
+
+    wire [KK-1:0] slow;
+    Up_count U_slow (Clock, Resetn, slow);
+        defparam U_slow.n = KK;
+    wire speed_sync = (slow == {KK{1'b1}});
+
+    // next-state fsm
+    always @ (*)
+        case (y_Q)
+            A:  Y_D = B;
+            B:  if (redraw && speed_sync) Y_D = C;
+                else Y_D = B;
+
+            // erase old sprite
+            C:  if (XC != BOX_SIZE_X-1) Y_D = C;
+                else Y_D = D;
+            D:  if (YC != BOX_SIZE_Y-1) Y_D = C;
+                else Y_D = E;
+
+            // move + reset pixel counters
+            E:  Y_D = F;
+
+            // draw new sprite
+            F:  if (XC != BOX_SIZE_X-1) Y_D = F;
+                else Y_D = G;
+            G:  if (YC != BOX_SIZE_Y-1) Y_D = F;
+                else Y_D = H;
+
+            H:  Y_D = B;
+            default: Y_D = A;
+        endcase
+
+    // output drawing fsm
+    always @ (*)
+    begin
+        Lx = 1'b0; Ly = 1'b0; Ex = 1'b0; write = 1'b0;
+        Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; erase = 1'b0;
+        case (y_Q)
+            A:  begin Lx = 1'b1; Ly = 1'b1; end
+            B:  begin Lxc = 1'b1; Lyc = 1'b1; end
+            C:  begin Exc = 1'b1; write = 1'b1; erase = 1'b1; end
+            D:  begin Lxc = 1'b1; Eyc = 1'b1; erase = 1'b1; end
+            // reload both counters so the draw pass starts at (0,0)
+            E:  begin Ex = move_ok; Lxc = 1'b1; Lyc = 1'b1; end
+            F:  begin Exc = 1'b1; write = 1'b1; end
+            G:  begin Lxc = 1'b1; Eyc = 1'b1; end
+            H:  ;
+        endcase
+    end
+
+    always @(posedge Clock)
+        if (!Resetn)
+            y_Q <= 3'b0;
+        else
+            y_Q <= Y_D;
+
+    // latch yell state and clear "first" at the move state
+    always @(posedge Clock)
+        if (!Resetn) begin
+            first <= 1'b1;
+            yell_drawn <= 1'b0;
+        end
+        else if (y_Q == E) begin
+            first <= 1'b0;
+            yell_drawn <= yell_pressed;
+        end
+
+    // 11x13 sprite using 3-bit RGB 
+    wire glasses = (YC == 0) || (YC == 4) ||
+                   (YC <= 4 && (XC == 0 || XC == 5 || XC == 10));
+    wire eyes = (YC == 2) && (XC == 3 || XC == 7);
+
+    always @(*) begin
+        obj_color = 3'b010; // green body fill
+
+        if (yell_drawn) begin
+            if (glasses)
+                obj_color = 3'b000;
+            else if (eyes)
+                obj_color = 3'b000;
+            else if (YC == 5 && XC >= 4 && XC <= 6)
+                obj_color = 3'b111; // white teeth
+            else if (YC == 5 && XC == 7)
+                obj_color = 3'b100;
+            else if (YC >= 5 && YC <= 7 && XC >= 3 && XC <= 7)
+                obj_color = 3'b100; // red tongue
+            else if (YC == 8 && XC >= 3 && XC <= 7)
+                obj_color = 3'b000; // lips
+            else if (XC == 2 && YC >= 5 && YC <= 7)
+                obj_color = 3'b000;
+            else if (XC == 8 && YC >= 5 && YC <= 7)
+                obj_color = 3'b000;
+        end
+        else begin
+            if (glasses)
+                obj_color = 3'b000;
+            else if (eyes)
+                obj_color = 3'b000;
+            else if (YC == 6 && XC >= 2 && XC <= 8) // mouth
+                obj_color = 3'b000;
+        end
+    end
+
+    regn U7 (X - (BOX_SIZE_X >> 1) + XC, Resetn, 1'b1, Clock, VGA_x);
+        defparam U7.n = 8;
+    regn U8 (Y - (BOX_SIZE_Y >> 1) + YC, Resetn, 1'b1, Clock, VGA_y);
+        defparam U8.n = 7;
+
+    regn U9 (write, Resetn, 1'b1, Clock, VGA_write);
+        defparam U9.n = 1;
+
+    wire [2:0] color_next = erase ? BG_COLOR : obj_color;
+    regn U10 (color_next, Resetn, 1'b1, Clock, VGA_color);
+        defparam U10.n = 3;
+
+endmodule
+
+module regn(R, Resetn, E, Clock, Q);
+    parameter n = 8;
+    input wire [n-1:0] R;
+    input wire Resetn, E, Clock;
+    output reg [n-1:0] Q;
+
+    always @(posedge Clock)
+        if (!Resetn)
+            Q <= 0;
+        else if (E)
+            Q <= R;
+endmodule
