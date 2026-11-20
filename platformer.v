@@ -1,4 +1,5 @@
 `default_nettype none
+
 module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
 
     parameter RESOLUTION = "160x120"; // "640x480" "320x240" "160x120"
@@ -6,16 +7,16 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     parameter nX = 8;
     parameter nY = 7;
 
-    // scene layout 
+    // scene layout
     parameter YSCREEN = 120;
-    parameter GROUND_HEIGHT = 8;                 
-    parameter BG_COLOR = 3'b000;                 
-                                                 
+    parameter GROUND_HEIGHT = 8;
+    parameter BG_COLOR = 3'b000;
+
     localparam GROUND_Y = YSCREEN - GROUND_HEIGHT;   // first ground row (112)
     localparam PLAYER_Y = GROUND_Y - 1 - 6;          // sprite is 13 tall, centred on Y -> bottom row = Y + 6
 
     // bird
-    parameter BIRD_KK = 19;                      // bird speed: smaller = faster 
+    parameter BIRD_KK = 19;                      // bird speed: smaller = faster
     localparam [6:0] BIRD_Y = 7'd30;             // row the bird flies on
 
     input [3:0] KEY;
@@ -32,17 +33,41 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
 
-    wire Resetn;
-    assign Resetn = KEY[0];
+    // synchronize inputs to stop random pixels bug
+    reg [1:0] rst_s, over_s, bird_s;
+    always @(posedge CLOCK_50) begin
+        rst_s  <= {rst_s[0],  KEY[0]};
+        over_s <= {over_s[0], SW[0]};
+        bird_s <= {bird_s[0], SW[1]};
+    end
 
-    // Game over screen while SW[0] = 1.
+    wire Resetn  = rst_s[1];     // active low, now synchronous
+    wire sw_over = over_s[1];    // game over mode
+    wire sw_bird = bird_s[1];    // bird mode
+
+    // one-clock pulse whenever the mode changes
+    reg [1:0] mode_q;
+    always @(posedge CLOCK_50) mode_q <= {sw_over, sw_bird};
+    wire mode_chg = ({sw_over, sw_bird} != mode_q);
+
+    // redraw when leaving every scene now, bird mode isn't weird
+    wire [nY-1:0] sc_y;
+    wire [COLOR_DEPTH-1:0] sc_color;
+    wire sc_write, sc_done;
+
+    wire scene_resetn = Resetn & ~sw_over & ~mode_chg;
+    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR)) SCENE
+        (CLOCK_50, scene_resetn, sc_x, sc_y, sc_color, sc_write, sc_done);
+
+    // game over screen ONLY SW[0] = 1
     wire [nX-1:0] go_x;
     wire [nY-1:0] go_y;
     wire [COLOR_DEPTH-1:0] go_color;
     wire go_write, go_done;
 
-    game_over GO (CLOCK_50, Resetn, SW[0], go_x, go_y, go_color, go_write, go_done);
+    game_over GO (CLOCK_50, Resetn, sw_over, go_x, go_y, go_color, go_write, go_done);
 
+    // Bird: ONLY in bird mode
     wire [7:0] bird_x;
     wire [6:0] bird_y;
     wire [2:0] bird_color;
@@ -51,29 +76,18 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     wire [nX-1:0] bird_obj_x;
     wire [nY-1:0] bird_obj_y;
 
-    wire bird_resetn = Resetn & SW[1] & ~SW[0];
+    wire bird_resetn = Resetn & sw_bird & ~sw_over & sc_done & ~mode_chg;
 
     bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR)) BIRD (
         bird_resetn, CLOCK_50, 1'b1, bird_req, bird_x, bird_y, bird_color, bird_write,
-   
         1'b1, bird_done, bird_busy, BIRD_Y, bird_obj_x, bird_obj_y);
 
-    wire [nX-1:0] sc_x;
-    wire [nY-1:0] sc_y;
-    wire [COLOR_DEPTH-1:0] sc_color;
-    wire sc_write, sc_done;
-
-    wire scene_resetn = Resetn & ~SW[0] & ~SW[1];
-    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR)) SCENE
-        (CLOCK_50, scene_resetn, sc_x, sc_y, sc_color, sc_write, sc_done);
-
-    
     wire [7:0] player_x;
     wire [6:0] player_y;
     wire [2:0] player_color;
     wire player_write;
 
-    wire player_resetn = Resetn & sc_done;
+    wire player_resetn = Resetn & sc_done & ~sw_bird & ~sw_over & ~mode_chg;
 
     // KEY[1] = right, KEY[3] = left, KEY[2] = yell
     player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR)) PLAYER_INST (
@@ -90,19 +104,21 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
     assign LEDR = SW;
 
-    // VGA adapter :
-    //   SW[0] = 1  -> game over screen
-    //   SW[1] = 1  -> bird
-    //   scene not finished drawing   -> scene_draw (background + ground)
-    //   otherwise -> player
-    wire sel_go    = SW[0];
-    wire sel_bird  = ~SW[0] & SW[1];
-    wire sel_scene = ~SW[0] & ~SW[1] & ~sc_done;
+    // ------------------------------------------------------------------
+    // Who drives the VGA adapter (first match wins):
+    //   game over mode               -> game over screen
+    //   scene not finished drawing   -> scene_draw
+    //   bird mode                    -> bird
+    //   otherwise                    -> player
+    // ------------------------------------------------------------------
+    wire sel_go    = sw_over;
+    wire sel_scene = ~sw_over & ~sc_done;
+    wire sel_bird  = ~sw_over & sc_done & sw_bird;
 
-    wire [7:0] adp_x = sel_go ? go_x : (sel_bird ? bird_x : (sel_scene ? sc_x : player_x));
-    wire [6:0] adp_y = sel_go ? go_y : (sel_bird ? bird_y : (sel_scene ? sc_y : player_y));
-    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_bird ? bird_color : (sel_scene ? sc_color : player_color));
-    wire adp_write = sel_go ? go_write : (sel_bird ? bird_write : (sel_scene ? sc_write : player_write));
+    wire [7:0] adp_x = sel_go ? go_x : (sel_scene ? sc_x : (sel_bird ? bird_x : player_x));
+    wire [6:0] adp_y = sel_go ? go_y : (sel_scene ? sc_y : (sel_bird ? bird_y : player_y));
+    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_scene ? sc_color : (sel_bird ? bird_color : player_color));
+    wire adp_write = sel_go ? go_write : (sel_scene ? sc_write : (sel_bird ? bird_write : player_write));
 
     vga_adapter VGA (
             .resetn(Resetn),

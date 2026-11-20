@@ -1,5 +1,5 @@
 Flow report for platformer
-Wed Nov 18 19:39:02 2026
+Fri Nov 20 15:15:58 2026
 Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 
 
@@ -41,15 +41,15 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +---------------------------------+------------------------------------------------+
-; Flow Status                     ; Successful - Wed Nov 18 19:38:56 2026          ;
+; Flow Status                     ; Successful - Fri Nov 20 15:15:52 2026          ;
 ; Quartus Prime Version           ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
 ; Revision Name                   ; platformer                                     ;
 ; Top-level Entity Name           ; platformer                                     ;
 ; Family                          ; Cyclone V                                      ;
 ; Device                          ; 5CSEMA5F31C6                                   ;
 ; Timing Models                   ; Final                                          ;
-; Logic utilization (in ALMs)     ; 244 / 32,070 ( < 1 % )                         ;
-; Total registers                 ; 191                                            ;
+; Logic utilization (in ALMs)     ; 245 / 32,070 ( < 1 % )                         ;
+; Total registers                 ; 249                                            ;
 ; Total pins                      ; 54 / 457 ( 12 % )                              ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 57,600 / 4,065,280 ( 1 % )                     ;
@@ -68,7 +68,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/18/2026 19:37:45 ;
+; Start date & time ; 11/20/2026 15:14:26 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; platformer          ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id                        ;
 +-------------------------------------+----------------------------------------+---------------+-------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID               ; 93181000663294.179504866507368         ; --            ; --          ; --                                ;
+; COMPILER_SIGNATURE_ID               ; 93181000663294.179520566602296         ; --            ; --          ; --                                ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_timing           ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_boundary_scan    ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --          ; eda_board_design_signal_integrity ;
@@ -100,11 +100,11 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:08     ; 1.0                     ; 4891 MB             ; 00:00:16                           ;
-; Fitter               ; 00:00:55     ; 1.0                     ; 6973 MB             ; 00:02:49                           ;
+; Analysis & Synthesis ; 00:00:08     ; 1.0                     ; 4891 MB             ; 00:00:17                           ;
+; Fitter               ; 00:01:09     ; 1.0                     ; 6912 MB             ; 00:03:40                           ;
 ; Assembler            ; 00:00:06     ; 1.0                     ; 5242 MB             ; 00:00:05                           ;
 ; Timing Analyzer      ; 00:00:05     ; 1.2                     ; 5394 MB             ; 00:00:06                           ;
-; Total                ; 00:01:14     ; --                      ; --                  ; 00:03:16                           ;
+; Total                ; 00:01:28     ; --                      ; --                  ; 00:04:08                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
