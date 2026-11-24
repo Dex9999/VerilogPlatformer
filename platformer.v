@@ -1,11 +1,15 @@
 `default_nettype none
 
-module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
+module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, PS2_CLK, PS2_DAT);
 
     parameter RESOLUTION = "160x120"; // "640x480" "320x240" "160x120"
     parameter COLOR_DEPTH = 3;        // 9 6 3
     parameter nX = 8;
     parameter nY = 7;
+	 
+	 //keyboard
+	 inout wire PS2_CLK;
+	 inout wire PS2_DAT;
 	 
 
     // scene layout
@@ -121,6 +125,34 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     wire player_write;
 
     wire player_resetn = Resetn & sc_done & ~sw_over & ~mode_chg;
+	 
+	 //keyboard
+	 wire [7:0] ps2_byte;       // last byte received
+	 wire       ps2_byte_en;    // 1 clock pulse for every new byte
+
+	 PS2_Controller PS2 (
+		 .CLOCK_50(CLOCK_50),
+		 .reset(~Resetn),
+		 .the_command(8'h00),
+		 .send_command(1'b0),
+		 .PS2_CLK(PS2_CLK),
+		 .PS2_DAT(PS2_DAT),
+		 .command_was_sent(),
+		 .error_communication_timed_out(),
+		 .received_data(ps2_byte),
+		 .received_data_en(ps2_byte_en));
+		 
+	 wire kb_left, kb_right, kb_jump;
+
+	 ps2_keys KEYS (
+			 .clock(CLOCK_50),
+			 .reset(~Resetn),
+			 .received_data(ps2_byte),
+			 .received_data_en(ps2_byte_en),
+			 .left(kb_left),
+			 .right(kb_right),
+			 .jump(kb_jump));
+
 
     // KEY[1] = right, KEY[3] = left, KEY[2] = jump, SW[2] = yell
     player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR), .GROUND_Y(GROUND_Y),
@@ -129,11 +161,11 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
                     .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) PLAYER_INST (
         .Resetn(player_resetn),
         .Clock(CLOCK_50),
-        .key_right(~KEY[1]),
-        .key_left(~KEY[3]),
-        .yell_pressed(SW[2]),
-        .jump_pressed(~KEY[2]),
-		  .gnt(player_gnt),
+        .key_right(~KEY[1] | kb_right),
+        .key_left(~KEY[3] | kb_left),
+        .yell_pressed(SW[2]), // temp until mic input
+        .jump_pressed(~KEY[2] | kb_jump),
+        .gnt(player_gnt),
         .req(player_req),
         .VGA_x(player_x),
         .VGA_y(player_y),
@@ -886,7 +918,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     // physics (all in pixels, one redraw = 2^KK clocks)
     parameter JUMP_V   = 6;         // upward speed given by a jump (pixels per tick)
     parameter GRAVITY  = 1;         // speed change per tick (pixels per tick^2)
-    parameter MAX_FALL = 6;         // max falling speed
+    parameter MAX_FALL = 2;         // max falling speed
     localparam HALF_X  = BOX_SIZE_X >> 1;   // 5
     localparam HALF_Y  = BOX_SIZE_Y >> 1;   // feet row = centre row + HALF of Y
     localparam CEIL_Y  = HALF_Y;            // ceiling check
@@ -1190,4 +1222,86 @@ module regn(R, Resetn, E, Clock, Q);
             Q <= 0;
         else if (E)
             Q <= R;
+endmodule
+
+// decodes the byte stream from the course PS2_Controller into
+// simpler keypressed signals
+//
+//   received_data / received_data_en   from PS2_Controller
+//                                      (received_data_en = 1-clock pulse per byte)
+//   left   = A  or  Left arrow
+//   right  = D  or  Right arrow
+//   jump   = W  or  Space  or  Up arrow
+//
+// PS/2 scan codes:
+//     press:  <code>                 (repeated about 10x/s while the key is held)
+//     release:  F0 <code>
+//   "extended" keys (arrows) get an E0 prefix:
+//     press:  E0 <code>
+//     release:  E0 F0 <code>
+// decoder remembers whether it has just seen F0 (release) and/or E0
+// (extended), then modifies with the NEXT code properly
+
+module ps2_keys (clock, reset, received_data, received_data_en, left, right, jump);
+
+    // scan codes, from Table 7 of PS/2 controller doc
+    parameter [7:0] CODE_A     = 8'h1C;
+    parameter [7:0] CODE_D     = 8'h23;
+    parameter [7:0] CODE_W     = 8'h1D;
+    parameter [7:0] CODE_SPACE = 8'h29;
+    // extended keys (arrive as E0, then code)
+    parameter [7:0] CODE_LEFT_ARROW  = 8'h6B;
+    parameter [7:0] CODE_RIGHT_ARROW = 8'h74;
+    parameter [7:0] CODE_UP_ARROW    = 8'h75;
+
+    input  wire clock;
+    input  wire reset;   // active HIGH like PS2_Controller
+    input  wire [7:0] received_data;
+    input  wire received_data_en;
+    output wire left, right, jump;
+
+    // track prefixes
+    reg got_break;      // F0: the next code is a key RELEASE
+    reg got_ext;        // E0: the next code is an extended key
+
+    // one flag per physical key: 1 = currently held down
+    reg a_dn, d_dn, w_dn, space_dn;
+    reg larrow_dn, rarrow_dn, uarrow_dn;
+
+    always @(posedge clock) begin
+        if (reset) begin
+            got_break <= 1'b0;
+            got_ext   <= 1'b0;
+            a_dn <= 1'b0; d_dn <= 1'b0; w_dn <= 1'b0; space_dn <= 1'b0;
+            larrow_dn <= 1'b0; rarrow_dn <= 1'b0; uarrow_dn <= 1'b0;
+        end
+        else if (received_data_en) begin
+            case (received_data)
+                8'hF0: got_break <= 1'b1;     // prefix: next code is release
+                8'hE0: got_ext   <= 1'b1;     // prefix: next code is extended key
+                default: begin
+                    // key is down unless an F0 came first
+                    if (!got_ext) begin
+                        if (received_data == CODE_A)     a_dn     <= !got_break;
+                        if (received_data == CODE_D)     d_dn     <= !got_break;
+                        if (received_data == CODE_W)     w_dn     <= !got_break;
+                        if (received_data == CODE_SPACE) space_dn <= !got_break;
+                    end
+                    else begin // arrow is down unless an F0 came first
+                        if (received_data == CODE_LEFT_ARROW)  larrow_dn <= !got_break;
+                        if (received_data == CODE_RIGHT_ARROW) rarrow_dn <= !got_break;
+                        if (received_data == CODE_UP_ARROW)    uarrow_dn <= !got_break;
+                    end
+                    // forget the prefixes/other codes we don't care about to restart next loop
+                    got_break <= 1'b0;
+                    got_ext   <= 1'b0;
+                end
+            endcase
+        end
+    end
+
+    assign left  = a_dn | larrow_dn; // combine inputs
+    assign right = d_dn | rarrow_dn;
+    assign jump  = w_dn | space_dn | uarrow_dn;
+
 endmodule

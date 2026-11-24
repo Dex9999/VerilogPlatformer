@@ -1,5 +1,5 @@
 Analysis & Synthesis report for platformer
-Tue Nov 24 15:27:04 2026
+Tue Nov 24 16:08:46 2026
 Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 
 
@@ -14,58 +14,65 @@ Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
   8. Analysis & Synthesis RAM Summary
-  9. State Machine - |platformer|bird_left:BIRD|y_Q
- 10. State Machine - |platformer|vga_arbiter:ARB|owner
- 11. Registers Removed During Synthesis
- 12. Removed Registers Triggering Further Register Optimizations
- 13. General Register Statistics
- 14. Multiplexer Restructuring Statistics (Restructuring Performed)
- 15. Source assignments for vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated
- 16. Parameter Settings for User Entity Instance: Top-level Entity: |platformer
- 17. Parameter Settings for User Entity Instance: scene_draw:SCENE
- 18. Parameter Settings for User Entity Instance: scene_draw:SCENE|scene_color:SC
- 19. Parameter Settings for User Entity Instance: bird_left:BIRD
- 20. Parameter Settings for User Entity Instance: bird_left:BIRD|scene_color:SCN
- 21. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U2
- 22. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U1
- 23. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U3
- 24. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U4
- 25. Parameter Settings for User Entity Instance: bird_left:BIRD|Up_count:U6
- 26. Parameter Settings for User Entity Instance: player_object:PLAYER_INST
- 27. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:UX
- 28. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U3
- 29. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U4
- 30. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|Up_count:U_slow
- 31. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|scene_color:SCN
- 32. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U7
- 33. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U8
- 34. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U9
- 35. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U10
- 36. Parameter Settings for User Entity Instance: vga_adapter:VGA
- 37. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_address_translator:user_input_translator
- 38. Parameter Settings for User Entity Instance: vga_adapter:VGA|altsyncram:VideoMemory
- 39. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component
- 40. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller
- 41. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator
- 42. altsyncram Parameter Settings by Entity Instance
- 43. altpll Parameter Settings by Entity Instance
- 44. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U10"
- 45. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U9"
- 46. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U8"
- 47. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U7"
- 48. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U4"
- 49. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U3"
- 50. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:UX"
- 51. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U4"
- 52. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U3"
- 53. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U1"
- 54. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U2"
- 55. Port Connectivity Checks: "bird_left:BIRD"
- 56. Port Connectivity Checks: "game_over:GO"
- 57. Post-Synthesis Netlist Statistics for Top Partition
- 58. Elapsed Time Per Partition
- 59. Analysis & Synthesis Messages
- 60. Analysis & Synthesis Suppressed Messages
+  9. State Machine - |platformer|PS2_Controller:PS2|s_ps2_transceiver
+ 10. State Machine - |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter
+ 11. State Machine - |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver
+ 12. State Machine - |platformer|bird_left:BIRD|y_Q
+ 13. State Machine - |platformer|vga_arbiter:ARB|owner
+ 14. Registers Removed During Synthesis
+ 15. Removed Registers Triggering Further Register Optimizations
+ 16. General Register Statistics
+ 17. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 18. Source assignments for vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated
+ 19. Parameter Settings for User Entity Instance: Top-level Entity: |platformer
+ 20. Parameter Settings for User Entity Instance: scene_draw:SCENE
+ 21. Parameter Settings for User Entity Instance: scene_draw:SCENE|scene_color:SC
+ 22. Parameter Settings for User Entity Instance: bird_left:BIRD
+ 23. Parameter Settings for User Entity Instance: bird_left:BIRD|scene_color:SCN
+ 24. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U2
+ 25. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U1
+ 26. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U3
+ 27. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U4
+ 28. Parameter Settings for User Entity Instance: bird_left:BIRD|Up_count:U6
+ 29. Parameter Settings for User Entity Instance: PS2_Controller:PS2
+ 30. Parameter Settings for User Entity Instance: PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out
+ 31. Parameter Settings for User Entity Instance: ps2_keys:KEYS
+ 32. Parameter Settings for User Entity Instance: player_object:PLAYER_INST
+ 33. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:UX
+ 34. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U3
+ 35. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U4
+ 36. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|Up_count:U_slow
+ 37. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|scene_color:SCN
+ 38. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U7
+ 39. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U8
+ 40. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U9
+ 41. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U10
+ 42. Parameter Settings for User Entity Instance: vga_adapter:VGA
+ 43. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_address_translator:user_input_translator
+ 44. Parameter Settings for User Entity Instance: vga_adapter:VGA|altsyncram:VideoMemory
+ 45. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component
+ 46. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller
+ 47. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator
+ 48. altsyncram Parameter Settings by Entity Instance
+ 49. altpll Parameter Settings by Entity Instance
+ 50. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U10"
+ 51. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U9"
+ 52. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U8"
+ 53. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U7"
+ 54. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U4"
+ 55. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U3"
+ 56. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:UX"
+ 57. Port Connectivity Checks: "PS2_Controller:PS2"
+ 58. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U4"
+ 59. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U3"
+ 60. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U1"
+ 61. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U2"
+ 62. Port Connectivity Checks: "bird_left:BIRD"
+ 63. Port Connectivity Checks: "game_over:GO"
+ 64. Post-Synthesis Netlist Statistics for Top Partition
+ 65. Elapsed Time Per Partition
+ 66. Analysis & Synthesis Messages
+ 67. Analysis & Synthesis Suppressed Messages
 
 
 
@@ -92,14 +99,14 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +---------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Tue Nov 24 15:27:04 2026          ;
+; Analysis & Synthesis Status     ; Successful - Tue Nov 24 16:08:46 2026          ;
 ; Quartus Prime Version           ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
 ; Revision Name                   ; platformer                                     ;
 ; Top-level Entity Name           ; platformer                                     ;
 ; Family                          ; Cyclone V                                      ;
 ; Logic utilization (in ALMs)     ; N/A                                            ;
-; Total registers                 ; 200                                            ;
-; Total pins                      ; 54                                             ;
+; Total registers                 ; 299                                            ;
+; Total pins                      ; 56                                             ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 57,600                                         ;
 ; Total DSP Blocks                ; 0                                              ;
@@ -212,7 +219,11 @@ https://fpgasoftware.intel.com/eula.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processors 2-6         ;   0.0%      ;
+;     Processor 2            ;   0.0%      ;
+;     Processor 3            ;   0.0%      ;
+;     Processor 4            ;   0.0%      ;
+;     Processor 5            ;   0.0%      ;
+;     Processor 6            ;   0.0%      ;
 +----------------------------+-------------+
 
 
@@ -227,6 +238,9 @@ https://fpgasoftware.intel.com/eula.
 ; vga_address_translator.v         ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/vga_address_translator.v                                           ;         ;
 ; vga_adapter.v                    ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/vga_adapter.v                                                      ;         ;
 ; platformer.v                     ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/platformer.v                                                       ;         ;
+; Altera_UP_PS2_Command_Out.v      ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/Altera_UP_PS2_Command_Out.v                                        ;         ;
+; Altera_UP_PS2_Data_In.v          ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/Altera_UP_PS2_Data_In.v                                            ;         ;
+; PS2_Controller.v                 ; yes             ; User Verilog HDL File            ; C:/intelFPGA/platformer/PS2_Controller.v                                                   ;         ;
 ; altsyncram.tdf                   ; yes             ; Megafunction                     ; c:/intelfpga/quartus_prime_lite_23.1/quartus/libraries/megafunctions/altsyncram.tdf        ;         ;
 ; stratix_ram_block.inc            ; yes             ; Megafunction                     ; c:/intelfpga/quartus_prime_lite_23.1/quartus/libraries/megafunctions/stratix_ram_block.inc ;         ;
 ; lpm_mux.inc                      ; yes             ; Megafunction                     ; c:/intelfpga/quartus_prime_lite_23.1/quartus/libraries/megafunctions/lpm_mux.inc           ;         ;
@@ -253,18 +267,18 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------+----------------+
 ; Resource                                    ; Usage          ;
 +---------------------------------------------+----------------+
-; Estimate of Logic utilization (ALMs needed) ; 377            ;
+; Estimate of Logic utilization (ALMs needed) ; 449            ;
 ;                                             ;                ;
-; Combinational ALUT usage for logic          ; 618            ;
-;     -- 7 input functions                    ; 11             ;
-;     -- 6 input functions                    ; 122            ;
-;     -- 5 input functions                    ; 102            ;
-;     -- 4 input functions                    ; 82             ;
-;     -- <=3 input functions                  ; 301            ;
+; Combinational ALUT usage for logic          ; 741            ;
+;     -- 7 input functions                    ; 8              ;
+;     -- 6 input functions                    ; 146            ;
+;     -- 5 input functions                    ; 114            ;
+;     -- 4 input functions                    ; 98             ;
+;     -- <=3 input functions                  ; 375            ;
 ;                                             ;                ;
-; Dedicated logic registers                   ; 200            ;
+; Dedicated logic registers                   ; 299            ;
 ;                                             ;                ;
-; I/O pins                                    ; 54             ;
+; I/O pins                                    ; 56             ;
 ; Total MLAB memory bits                      ; 0              ;
 ; Total block memory bits                     ; 57600          ;
 ;                                             ;                ;
@@ -274,51 +288,55 @@ https://fpgasoftware.intel.com/eula.
 ;     -- PLLs                                 ; 1              ;
 ;                                             ;                ;
 ; Maximum fan-out node                        ; CLOCK_50~input ;
-; Maximum fan-out                             ; 180            ;
-; Total fan-out                               ; 3366           ;
-; Average fan-out                             ; 3.60           ;
+; Maximum fan-out                             ; 279            ;
+; Total fan-out                               ; 4132           ;
+; Average fan-out                             ; 3.55           ;
 +---------------------------------------------+----------------+
 
 
-+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                                                                   ;
-+---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+------------------------+--------------+
-; Compilation Hierarchy Node                              ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                        ; Entity Name            ; Library Name ;
-+---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+------------------------+--------------+
-; |platformer                                             ; 618 (43)            ; 200 (5)                   ; 57600             ; 0          ; 54   ; 0            ; |platformer                                                                                                ; platformer             ; work         ;
-;    |bird_left:BIRD|                                     ; 166 (102)           ; 57 (14)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD                                                                                 ; bird_left              ; work         ;
-;       |UpDn_count:U1|                                   ; 1 (1)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U1                                                                   ; UpDn_count             ; work         ;
-;       |UpDn_count:U2|                                   ; 17 (17)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U2                                                                   ; UpDn_count             ; work         ;
-;       |UpDn_count:U3|                                   ; 10 (10)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U3                                                                   ; UpDn_count             ; work         ;
-;       |UpDn_count:U4|                                   ; 12 (12)             ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U4                                                                   ; UpDn_count             ; work         ;
-;       |Up_count:U6|                                     ; 19 (19)             ; 19 (19)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|Up_count:U6                                                                     ; Up_count               ; work         ;
-;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|scene_color:SCN                                                                 ; scene_color            ; work         ;
-;    |game_over:GO|                                       ; 58 (58)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|game_over:GO                                                                                   ; game_over              ; work         ;
-;    |player_object:PLAYER_INST|                          ; 249 (189)           ; 74 (19)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST                                                                      ; player_object          ; work         ;
-;       |UpDn_count:U3|                                   ; 6 (6)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U3                                                        ; UpDn_count             ; work         ;
-;       |UpDn_count:U4|                                   ; 5 (5)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U4                                                        ; UpDn_count             ; work         ;
-;       |UpDn_count:UX|                                   ; 17 (17)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:UX                                                        ; UpDn_count             ; work         ;
-;       |Up_count:U_slow|                                 ; 20 (20)             ; 20 (20)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|Up_count:U_slow                                                      ; Up_count               ; work         ;
-;       |regn:U10|                                        ; 7 (7)               ; 3 (3)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U10                                                             ; regn                   ; work         ;
-;       |regn:U7|                                         ; 0 (0)               ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U7                                                              ; regn                   ; work         ;
-;       |regn:U8|                                         ; 0 (0)               ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U8                                                              ; regn                   ; work         ;
-;       |regn:U9|                                         ; 0 (0)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U9                                                              ; regn                   ; work         ;
-;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|scene_color:SCN                                                      ; scene_color            ; work         ;
-;    |scene_draw:SCENE|                                   ; 28 (23)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE                                                                               ; scene_draw             ; work         ;
-;       |scene_color:SC|                                  ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE|scene_color:SC                                                                ; scene_color            ; work         ;
-;    |vga_adapter:VGA|                                    ; 71 (2)              ; 30 (0)                    ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA                                                                                ; vga_adapter            ; work         ;
-;       |altsyncram:VideoMemory|                          ; 6 (0)               ; 4 (0)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory                                                         ; altsyncram             ; work         ;
-;          |altsyncram_16n1:auto_generated|               ; 6 (0)               ; 4 (4)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated                          ; altsyncram_16n1        ; work         ;
-;             |decode_01a:rden_decode_b|                  ; 3 (3)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|decode_01a:rden_decode_b ; decode_01a             ; work         ;
-;             |decode_7la:decode2|                        ; 3 (3)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|decode_7la:decode2       ; decode_7la             ; work         ;
-;       |vga_address_translator:user_input_translator|    ; 16 (16)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_address_translator:user_input_translator                                   ; vga_address_translator ; work         ;
-;       |vga_controller:controller|                       ; 47 (37)             ; 26 (26)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_controller:controller                                                      ; vga_controller         ; work         ;
-;          |vga_address_translator:controller_translator| ; 10 (10)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator         ; vga_address_translator ; work         ;
-;       |vga_pll:mypll|                                   ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll                                                                  ; vga_pll                ; work         ;
-;          |altpll:altpll_component|                      ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component                                          ; altpll                 ; work         ;
-;             |altpll_80u:auto_generated|                 ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component|altpll_80u:auto_generated                ; altpll_80u             ; work         ;
-;    |vga_arbiter:ARB|                                    ; 3 (3)               ; 2 (2)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_arbiter:ARB                                                                                ; vga_arbiter            ; work         ;
-+---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+------------------------+--------------+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                                                                      ;
++---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+---------------------------+--------------+
+; Compilation Hierarchy Node                              ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                        ; Entity Name               ; Library Name ;
++---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+---------------------------+--------------+
+; |platformer                                             ; 741 (44)            ; 299 (5)                   ; 57600             ; 0          ; 56   ; 0            ; |platformer                                                                                                ; platformer                ; work         ;
+;    |PS2_Controller:PS2|                                 ; 104 (7)             ; 90 (5)                    ; 0                 ; 0          ; 0    ; 0            ; |platformer|PS2_Controller:PS2                                                                             ; PS2_Controller            ; work         ;
+;       |Altera_UP_PS2_Command_Out:PS2_Command_Out|       ; 83 (83)             ; 60 (60)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out                                   ; Altera_UP_PS2_Command_Out ; work         ;
+;       |Altera_UP_PS2_Data_In:PS2_Data_In|               ; 14 (14)             ; 25 (25)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In                                           ; Altera_UP_PS2_Data_In     ; work         ;
+;    |bird_left:BIRD|                                     ; 166 (102)           ; 57 (14)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD                                                                                 ; bird_left                 ; work         ;
+;       |UpDn_count:U1|                                   ; 1 (1)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U1                                                                   ; UpDn_count                ; work         ;
+;       |UpDn_count:U2|                                   ; 17 (17)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U2                                                                   ; UpDn_count                ; work         ;
+;       |UpDn_count:U3|                                   ; 10 (10)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U3                                                                   ; UpDn_count                ; work         ;
+;       |UpDn_count:U4|                                   ; 12 (12)             ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U4                                                                   ; UpDn_count                ; work         ;
+;       |Up_count:U6|                                     ; 19 (19)             ; 19 (19)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|Up_count:U6                                                                     ; Up_count                  ; work         ;
+;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|scene_color:SCN                                                                 ; scene_color               ; work         ;
+;    |game_over:GO|                                       ; 57 (57)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|game_over:GO                                                                                   ; game_over                 ; work         ;
+;    |player_object:PLAYER_INST|                          ; 250 (190)           ; 74 (19)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST                                                                      ; player_object             ; work         ;
+;       |UpDn_count:U3|                                   ; 6 (6)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U3                                                        ; UpDn_count                ; work         ;
+;       |UpDn_count:U4|                                   ; 5 (5)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U4                                                        ; UpDn_count                ; work         ;
+;       |UpDn_count:UX|                                   ; 17 (17)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:UX                                                        ; UpDn_count                ; work         ;
+;       |Up_count:U_slow|                                 ; 20 (20)             ; 20 (20)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|Up_count:U_slow                                                      ; Up_count                  ; work         ;
+;       |regn:U10|                                        ; 7 (7)               ; 3 (3)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U10                                                             ; regn                      ; work         ;
+;       |regn:U7|                                         ; 0 (0)               ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U7                                                              ; regn                      ; work         ;
+;       |regn:U8|                                         ; 0 (0)               ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U8                                                              ; regn                      ; work         ;
+;       |regn:U9|                                         ; 0 (0)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U9                                                              ; regn                      ; work         ;
+;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|scene_color:SCN                                                      ; scene_color               ; work         ;
+;    |ps2_keys:KEYS|                                      ; 18 (18)             ; 9 (9)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|ps2_keys:KEYS                                                                                  ; ps2_keys                  ; work         ;
+;    |scene_draw:SCENE|                                   ; 28 (23)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE                                                                               ; scene_draw                ; work         ;
+;       |scene_color:SC|                                  ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE|scene_color:SC                                                                ; scene_color               ; work         ;
+;    |vga_adapter:VGA|                                    ; 71 (2)              ; 30 (0)                    ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA                                                                                ; vga_adapter               ; work         ;
+;       |altsyncram:VideoMemory|                          ; 6 (0)               ; 4 (0)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory                                                         ; altsyncram                ; work         ;
+;          |altsyncram_16n1:auto_generated|               ; 6 (0)               ; 4 (4)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated                          ; altsyncram_16n1           ; work         ;
+;             |decode_01a:rden_decode_b|                  ; 3 (3)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|decode_01a:rden_decode_b ; decode_01a                ; work         ;
+;             |decode_7la:decode2|                        ; 3 (3)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|decode_7la:decode2       ; decode_7la                ; work         ;
+;       |vga_address_translator:user_input_translator|    ; 16 (16)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_address_translator:user_input_translator                                   ; vga_address_translator    ; work         ;
+;       |vga_controller:controller|                       ; 47 (37)             ; 26 (26)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_controller:controller                                                      ; vga_controller            ; work         ;
+;          |vga_address_translator:controller_translator| ; 10 (10)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator         ; vga_address_translator    ; work         ;
+;       |vga_pll:mypll|                                   ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll                                                                  ; vga_pll                   ; work         ;
+;          |altpll:altpll_component|                      ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component                                          ; altpll                    ; work         ;
+;             |altpll_80u:auto_generated|                 ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component|altpll_80u:auto_generated                ; altpll_80u                ; work         ;
+;    |vga_arbiter:ARB|                                    ; 3 (3)               ; 2 (2)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|vga_arbiter:ARB                                                                                ; vga_arbiter               ; work         ;
++---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+---------------------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
 
@@ -329,6 +347,51 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+-------+----------------------+
 ; vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|ALTSYNCRAM ; AUTO ; Simple Dual Port ; 19200        ; 3            ; 19200        ; 3            ; 57600 ; ./MIF/background.mif ;
 +----------------------------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+-------+----------------------+
+
+
+Encoding Type:  One-Hot
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |platformer|PS2_Controller:PS2|s_ps2_transceiver                                                                                                                                                                                             ;
++--------------------------------------------+--------------------------------------------+-------------------------------------------+---------------------------------------+------------------------------------+-------------------------------------------+
+; Name                                       ; s_ps2_transceiver.PS2_STATE_3_END_TRANSFER ; s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT ; s_ps2_transceiver.PS2_STATE_1_DATA_IN ; s_ps2_transceiver.PS2_STATE_0_IDLE ; s_ps2_transceiver.PS2_STATE_4_END_DELAYED ;
++--------------------------------------------+--------------------------------------------+-------------------------------------------+---------------------------------------+------------------------------------+-------------------------------------------+
+; s_ps2_transceiver.PS2_STATE_0_IDLE         ; 0                                          ; 0                                         ; 0                                     ; 0                                  ; 0                                         ;
+; s_ps2_transceiver.PS2_STATE_1_DATA_IN      ; 0                                          ; 0                                         ; 1                                     ; 1                                  ; 0                                         ;
+; s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT  ; 0                                          ; 1                                         ; 0                                     ; 1                                  ; 0                                         ;
+; s_ps2_transceiver.PS2_STATE_3_END_TRANSFER ; 1                                          ; 0                                         ; 0                                     ; 1                                  ; 0                                         ;
+; s_ps2_transceiver.PS2_STATE_4_END_DELAYED  ; 0                                          ; 0                                         ; 0                                     ; 1                                  ; 1                                         ;
++--------------------------------------------+--------------------------------------------+-------------------------------------------+---------------------------------------+------------------------------------+-------------------------------------------+
+
+
+Encoding Type:  One-Hot
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter                                                                                                                                                                                                                                                                                                                                          ;
++------------------------------------------------------+--------------------------------------------------+------------------------------------------------+-----------------------------------------------+-------------------------------------------------+---------------------------------------------+----------------------------------------------+------------------------------------------------------+------------------------------------+
+; Name                                                 ; s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR ; s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT ; s_ps2_transmitter.PS2_STATE_5_RECEIVE_ACK_BIT ; s_ps2_transmitter.PS2_STATE_4_TRANSMIT_STOP_BIT ; s_ps2_transmitter.PS2_STATE_3_TRANSMIT_DATA ; s_ps2_transmitter.PS2_STATE_2_WAIT_FOR_CLOCK ; s_ps2_transmitter.PS2_STATE_1_INITIATE_COMMUNICATION ; s_ps2_transmitter.PS2_STATE_0_IDLE ;
++------------------------------------------------------+--------------------------------------------------+------------------------------------------------+-----------------------------------------------+-------------------------------------------------+---------------------------------------------+----------------------------------------------+------------------------------------------------------+------------------------------------+
+; s_ps2_transmitter.PS2_STATE_0_IDLE                   ; 0                                                ; 0                                              ; 0                                             ; 0                                               ; 0                                           ; 0                                            ; 0                                                    ; 0                                  ;
+; s_ps2_transmitter.PS2_STATE_1_INITIATE_COMMUNICATION ; 0                                                ; 0                                              ; 0                                             ; 0                                               ; 0                                           ; 0                                            ; 1                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_2_WAIT_FOR_CLOCK         ; 0                                                ; 0                                              ; 0                                             ; 0                                               ; 0                                           ; 1                                            ; 0                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_3_TRANSMIT_DATA          ; 0                                                ; 0                                              ; 0                                             ; 0                                               ; 1                                           ; 0                                            ; 0                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_4_TRANSMIT_STOP_BIT      ; 0                                                ; 0                                              ; 0                                             ; 1                                               ; 0                                           ; 0                                            ; 0                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_5_RECEIVE_ACK_BIT        ; 0                                                ; 0                                              ; 1                                             ; 0                                               ; 0                                           ; 0                                            ; 0                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT       ; 0                                                ; 1                                              ; 0                                             ; 0                                               ; 0                                           ; 0                                            ; 0                                                    ; 1                                  ;
+; s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR     ; 1                                                ; 0                                              ; 0                                             ; 0                                               ; 0                                           ; 0                                            ; 0                                                    ; 1                                  ;
++------------------------------------------------------+--------------------------------------------------+------------------------------------------------+-----------------------------------------------+-------------------------------------------------+---------------------------------------------+----------------------------------------------+------------------------------------------------------+------------------------------------+
+
+
+Encoding Type:  One-Hot
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver                                                                                                                                        ;
++------------------------------------------+--------------------------------------+------------------------------------+------------------------------------------+---------------------------------+------------------------------------+
+; Name                                     ; s_ps2_receiver.PS2_STATE_3_PARITY_IN ; s_ps2_receiver.PS2_STATE_2_DATA_IN ; s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA ; s_ps2_receiver.PS2_STATE_0_IDLE ; s_ps2_receiver.PS2_STATE_4_STOP_IN ;
++------------------------------------------+--------------------------------------+------------------------------------+------------------------------------------+---------------------------------+------------------------------------+
+; s_ps2_receiver.PS2_STATE_0_IDLE          ; 0                                    ; 0                                  ; 0                                        ; 0                               ; 0                                  ;
+; s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA ; 0                                    ; 0                                  ; 1                                        ; 1                               ; 0                                  ;
+; s_ps2_receiver.PS2_STATE_2_DATA_IN       ; 0                                    ; 1                                  ; 0                                        ; 1                               ; 0                                  ;
+; s_ps2_receiver.PS2_STATE_3_PARITY_IN     ; 1                                    ; 0                                  ; 0                                        ; 1                               ; 0                                  ;
+; s_ps2_receiver.PS2_STATE_4_STOP_IN       ; 0                                    ; 0                                  ; 0                                        ; 1                               ; 1                                  ;
++------------------------------------------+--------------------------------------+------------------------------------+------------------------------------------+---------------------------------+------------------------------------+
 
 
 Encoding Type:  One-Hot
@@ -366,32 +429,59 @@ Encoding Type:  One-Hot
 +----------+----------+----------+------------------+
 
 
-+----------------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                                     ;
-+----------------------------------------+-----------------------------------------------+
-; Register name                          ; Reason for Removal                            ;
-+----------------------------------------+-----------------------------------------------+
-; mode_q[1]                              ; Stuck at GND due to stuck port data_in        ;
-; bird_left:BIRD|UpDn_count:U1|Q[1,3,6]  ; Merged with bird_left:BIRD|UpDn_count:U1|Q[0] ;
-; bird_left:BIRD|UpDn_count:U1|Q[4,5]    ; Merged with bird_left:BIRD|UpDn_count:U1|Q[2] ;
-; bird_left:BIRD|UpDn_count:U1|Q[2]      ; Stuck at GND due to stuck port data_in        ;
-; vga_arbiter:ARB|owner.00               ; Lost fanout                                   ;
-; bird_left:BIRD|y_Q~2                   ; Lost fanout                                   ;
-; bird_left:BIRD|y_Q~3                   ; Lost fanout                                   ;
-; bird_left:BIRD|y_Q~4                   ; Lost fanout                                   ;
-; bird_left:BIRD|y_Q~5                   ; Lost fanout                                   ;
-; Total Number of Removed Registers = 12 ;                                               ;
-+----------------------------------------+-----------------------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                                                                                                                                      ;
++---------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+; Register name                                                                                                 ; Reason for Removal                                                                      ;
++---------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+; mode_q[1]                                                                                                     ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|idle_counter[0..7]                                                                         ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|ps2_command[1..7]                                ; Merged with PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|ps2_command[0] ;
+; bird_left:BIRD|UpDn_count:U1|Q[1,3,6]                                                                         ; Merged with bird_left:BIRD|UpDn_count:U1|Q[0]                                           ;
+; bird_left:BIRD|UpDn_count:U1|Q[4,5]                                                                           ; Merged with bird_left:BIRD|UpDn_count:U1|Q[2]                                           ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|ps2_command[0]                                   ; Stuck at GND due to stuck port data_in                                                  ;
+; bird_left:BIRD|UpDn_count:U1|Q[2]                                                                             ; Stuck at GND due to stuck port data_in                                                  ;
+; vga_arbiter:ARB|owner.00                                                                                      ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|s_ps2_transceiver~2                                                                        ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|s_ps2_transceiver~3                                                                        ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter~2                              ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter~3                              ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter~4                              ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver~2                                         ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver~3                                         ; Lost fanout                                                                             ;
+; bird_left:BIRD|y_Q~2                                                                                          ; Lost fanout                                                                             ;
+; bird_left:BIRD|y_Q~3                                                                                          ; Lost fanout                                                                             ;
+; bird_left:BIRD|y_Q~4                                                                                          ; Lost fanout                                                                             ;
+; bird_left:BIRD|y_Q~5                                                                                          ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT                                                  ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_4_END_DELAYED                                                  ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|command_was_sent                                 ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|error_communication_timed_out                    ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_3_END_TRANSFER                                                 ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA                 ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter.PS2_STATE_0_IDLE               ; Stuck at GND due to stuck port data_in                                                  ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT   ; Lost fanout                                                                             ;
+; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR ; Lost fanout                                                                             ;
+; Total Number of Removed Registers = 44                                                                        ;                                                                                         ;
++---------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
 
 
-+------------------------------------------------------------------------------------+
-; Removed Registers Triggering Further Register Optimizations                        ;
-+---------------+---------------------------+----------------------------------------+
-; Register name ; Reason for Removal        ; Registers Removed due to This Register ;
-+---------------+---------------------------+----------------------------------------+
-; mode_q[1]     ; Stuck at GND              ; bird_left:BIRD|UpDn_count:U1|Q[2]      ;
-;               ; due to stuck port data_in ;                                        ;
-+---------------+---------------------------+----------------------------------------+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                                                                                                                              ;
++--------------------------------------------------------------+---------------------------+---------------------------------------------------------------------------------------------------------------+
+; Register name                                                ; Reason for Removal        ; Registers Removed due to This Register                                                                        ;
++--------------------------------------------------------------+---------------------------+---------------------------------------------------------------------------------------------------------------+
+; PS2_Controller:PS2|idle_counter[3]                           ; Lost Fanouts              ; PS2_Controller:PS2|idle_counter[4], PS2_Controller:PS2|idle_counter[5],                                       ;
+;                                                              ;                           ; PS2_Controller:PS2|idle_counter[6], PS2_Controller:PS2|idle_counter[7]                                        ;
+; PS2_Controller:PS2|s_ps2_transceiver~2                       ; Lost Fanouts              ; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|command_was_sent,                                ;
+;                                                              ;                           ; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|error_communication_timed_out,                   ;
+;                                                              ;                           ; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter.PS2_STATE_6_COMMAND_WAS_SENT,  ;
+;                                                              ;                           ; PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|s_ps2_transmitter.PS2_STATE_7_TRANSMISSION_ERROR ;
+; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT ; Stuck at GND              ; PS2_Controller:PS2|s_ps2_transceiver.PS2_STATE_3_END_TRANSFER,                                                ;
+;                                                              ; due to stuck port data_in ; PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|s_ps2_receiver.PS2_STATE_1_WAIT_FOR_DATA                 ;
+; mode_q[1]                                                    ; Stuck at GND              ; bird_left:BIRD|UpDn_count:U1|Q[2]                                                                             ;
+;                                                              ; due to stuck port data_in ;                                                                                                               ;
++--------------------------------------------------------------+---------------------------+---------------------------------------------------------------------------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -399,12 +489,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 200   ;
-; Number of registers using Synchronous Clear  ; 138   ;
+; Total registers                              ; 299   ;
+; Number of registers using Synchronous Clear  ; 223   ;
 ; Number of registers using Synchronous Load   ; 9     ;
 ; Number of registers using Asynchronous Clear ; 20    ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 93    ;
+; Number of registers using Clock Enable       ; 169   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -414,24 +504,32 @@ Encoding Type:  One-Hot
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                                                    ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------+
+; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|received_data[0]                             ;
+; 3:1                ; 2 bits    ; 4 LEs         ; 2 LEs                ; 2 LEs                  ; Yes        ; |platformer|ps2_keys:KEYS|got_break                                                                           ;
 ; 3:1                ; 10 bits   ; 20 LEs        ; 0 LEs                ; 20 LEs                 ; Yes        ; |platformer|vga_adapter:VGA|vga_controller:controller|yCounter[6]                                             ;
-; 3:1                ; 7 bits    ; 14 LEs        ; 7 LEs                ; 7 LEs                  ; Yes        ; |platformer|scene_draw:SCENE|y[4]                                                                             ;
-; 3:1                ; 7 bits    ; 14 LEs        ; 7 LEs                ; 7 LEs                  ; Yes        ; |platformer|game_over:GO|y[1]                                                                                 ;
+; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|data_shift_reg[6]                            ;
+; 3:1                ; 7 bits    ; 14 LEs        ; 7 LEs                ; 7 LEs                  ; Yes        ; |platformer|scene_draw:SCENE|y[2]                                                                             ;
+; 3:1                ; 7 bits    ; 14 LEs        ; 7 LEs                ; 7 LEs                  ; Yes        ; |platformer|game_over:GO|y[6]                                                                                 ;
 ; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U2|Q[5]                                                                 ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|scene_draw:SCENE|x[7]                                                                             ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U3|Q[1]                                                                 ;
-; 4:1                ; 7 bits    ; 14 LEs        ; 14 LEs               ; 0 LEs                  ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U4|Q[1]                                                                 ;
-; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:U3|Q[2]                                                      ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:UX|Q[0]                                                      ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|game_over:GO|x[7]                                                                                 ;
-; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:U4|Q[1]                                                      ;
-; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[3]                                                                    ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|scene_draw:SCENE|x[1]                                                                             ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U3|Q[7]                                                                 ;
+; 4:1                ; 7 bits    ; 14 LEs        ; 14 LEs               ; 0 LEs                  ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U4|Q[6]                                                                 ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:U3|Q[1]                                                      ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:UX|Q[2]                                                      ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|game_over:GO|x[0]                                                                                 ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|UpDn_count:U4|Q[3]                                                      ;
+; 4:1                ; 13 bits   ; 26 LEs        ; 0 LEs                ; 26 LEs                 ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|command_initiate_counter[11]         ;
+; 4:1                ; 20 bits   ; 40 LEs        ; 0 LEs                ; 40 LEs                 ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|waiting_counter[16]                  ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|cur_bit[0]                           ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In|data_count[2]                                ;
+; 4:1                ; 17 bits   ; 34 LEs        ; 0 LEs                ; 34 LEs                 ; Yes        ; |platformer|PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out|transfer_counter[5]                  ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[0]                                                                    ;
 ; 5:1                ; 7 bits    ; 21 LEs        ; 14 LEs               ; 7 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|vy[2]                                                                   ;
-; 6:1                ; 2 bits    ; 8 LEs         ; 6 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[5]                                                                    ;
+; 6:1                ; 2 bits    ; 8 LEs         ; 6 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[6]                                                                    ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |platformer|bird_left:BIRD|y_Q                                                                                ;
-; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|mux_ifb:mux3|result_node[1] ;
+; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|mux_ifb:mux3|result_node[0] ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |platformer|player_object:PLAYER_INST|land_row                                                                ;
-; 4:1                ; 15 bits   ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; No         ; |platformer|adp_y[5]                                                                                          ;
+; 4:1                ; 15 bits   ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; No         ; |platformer|adp_y[4]                                                                                          ;
 ; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |platformer|player_object:PLAYER_INST|vy_n                                                                    ;
 ; 5:1                ; 2 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |platformer|vga_arbiter:ARB|owner                                                                             ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------+
@@ -610,6 +708,58 @@ Note: In order to hide this table in the UI and the text report file, please set
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
++-----------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: PS2_Controller:PS2 ;
++------------------+-------+--------------------------------------+
+; Parameter Name   ; Value ; Type                                 ;
++------------------+-------+--------------------------------------+
+; INITIALIZE_MOUSE ; 0     ; Signed Integer                       ;
++------------------+-------+--------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out ;
++------------------------------------+----------------------+-----------------------------------------------+
+; Parameter Name                     ; Value                ; Type                                          ;
++------------------------------------+----------------------+-----------------------------------------------+
+; CLOCK_CYCLES_FOR_101US             ; 5050                 ; Signed Integer                                ;
+; NUMBER_OF_BITS_FOR_101US           ; 13                   ; Signed Integer                                ;
+; COUNTER_INCREMENT_FOR_101US        ; 0000000000001        ; Unsigned Binary                               ;
+; CLOCK_CYCLES_FOR_15MS              ; 750000               ; Signed Integer                                ;
+; NUMBER_OF_BITS_FOR_15MS            ; 20                   ; Signed Integer                                ;
+; COUNTER_INCREMENT_FOR_15MS         ; 00000000000000000001 ; Unsigned Binary                               ;
+; CLOCK_CYCLES_FOR_2MS               ; 100000               ; Signed Integer                                ;
+; NUMBER_OF_BITS_FOR_2MS             ; 17                   ; Signed Integer                                ;
+; COUNTER_INCREMENT_FOR_2MS          ; 00000000000000001    ; Unsigned Binary                               ;
+; PS2_STATE_0_IDLE                   ; 000                  ; Unsigned Binary                               ;
+; PS2_STATE_1_INITIATE_COMMUNICATION ; 001                  ; Unsigned Binary                               ;
+; PS2_STATE_2_WAIT_FOR_CLOCK         ; 010                  ; Unsigned Binary                               ;
+; PS2_STATE_3_TRANSMIT_DATA          ; 011                  ; Unsigned Binary                               ;
+; PS2_STATE_4_TRANSMIT_STOP_BIT      ; 100                  ; Unsigned Binary                               ;
+; PS2_STATE_5_RECEIVE_ACK_BIT        ; 101                  ; Unsigned Binary                               ;
+; PS2_STATE_6_COMMAND_WAS_SENT       ; 110                  ; Unsigned Binary                               ;
+; PS2_STATE_7_TRANSMISSION_ERROR     ; 111                  ; Unsigned Binary                               ;
++------------------------------------+----------------------+-----------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: ps2_keys:KEYS ;
++------------------+----------+------------------------------+
+; Parameter Name   ; Value    ; Type                         ;
++------------------+----------+------------------------------+
+; CODE_A           ; 00011100 ; Unsigned Binary              ;
+; CODE_D           ; 00100011 ; Unsigned Binary              ;
+; CODE_W           ; 00011101 ; Unsigned Binary              ;
+; CODE_SPACE       ; 00101001 ; Unsigned Binary              ;
+; CODE_LEFT_ARROW  ; 01101011 ; Unsigned Binary              ;
+; CODE_RIGHT_ARROW ; 01110100 ; Unsigned Binary              ;
+; CODE_UP_ARROW    ; 01110101 ; Unsigned Binary              ;
++------------------+----------+------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
 +-----------------------------------------------------------------------------+
 ; Parameter Settings for User Entity Instance: player_object:PLAYER_INST      ;
 +----------------+------------------------------------------+-----------------+
@@ -632,7 +782,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; PLAT_Y         ; 0011000001000000010100000110000001110000 ; Unsigned Binary ;
 ; JUMP_V         ; 6                                        ; Signed Integer  ;
 ; GRAVITY        ; 1                                        ; Signed Integer  ;
-; MAX_FALL       ; 6                                        ; Signed Integer  ;
+; MAX_FALL       ; 2                                        ; Signed Integer  ;
 ; A              ; 000                                      ; Unsigned Binary ;
 ; B              ; 001                                      ; Unsigned Binary ;
 ; C              ; 010                                      ; Unsigned Binary ;
@@ -1353,6 +1503,18 @@ Note: In order to hide this table in the UI and the text report file, please set
 +---------+-------+----------+----------------------------------------+
 
 
++----------------------------------------------------------------------------+
+; Port Connectivity Checks: "PS2_Controller:PS2"                             ;
++-------------------------------+--------+----------+------------------------+
+; Port                          ; Type   ; Severity ; Details                ;
++-------------------------------+--------+----------+------------------------+
+; the_command                   ; Input  ; Info     ; Stuck at GND           ;
+; send_command                  ; Input  ; Info     ; Stuck at GND           ;
+; command_was_sent              ; Output ; Info     ; Explicitly unconnected ;
+; error_communication_timed_out ; Output ; Info     ; Explicitly unconnected ;
++-------------------------------+--------+----------+------------------------+
+
+
 +----------------------------------------------------------+
 ; Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U4" ;
 +------+-------+----------+--------------------------------+
@@ -1431,44 +1593,45 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; arriav_ff             ; 200                         ;
+; arriav_ff             ; 299                         ;
 ;     CLR SCLR          ; 10                          ;
-;     ENA               ; 22                          ;
+;     ENA               ; 30                          ;
 ;     ENA CLR SCLR      ; 10                          ;
-;     ENA SCLR          ; 54                          ;
+;     ENA SCLR          ; 122                         ;
 ;     ENA SCLR SLD      ; 7                           ;
-;     SCLR              ; 55                          ;
+;     SCLR              ; 72                          ;
 ;     SCLR SLD          ; 2                           ;
-;     plain             ; 40                          ;
-; arriav_lcell_comb     ; 619                         ;
-;     arith             ; 220                         ;
+;     plain             ; 46                          ;
+; arriav_io_obuf        ; 2                           ;
+; arriav_lcell_comb     ; 742                         ;
+;     arith             ; 270                         ;
 ;         0 data inputs ; 6                           ;
-;         1 data inputs ; 159                         ;
+;         1 data inputs ; 209                         ;
 ;         2 data inputs ; 41                          ;
 ;         3 data inputs ; 2                           ;
 ;         4 data inputs ; 5                           ;
 ;         5 data inputs ; 7                           ;
-;     extend            ; 11                          ;
-;         7 data inputs ; 11                          ;
-;     normal            ; 378                         ;
+;     extend            ; 8                           ;
+;         7 data inputs ; 8                           ;
+;     normal            ; 454                         ;
 ;         0 data inputs ; 2                           ;
-;         1 data inputs ; 1                           ;
-;         2 data inputs ; 30                          ;
-;         3 data inputs ; 51                          ;
-;         4 data inputs ; 77                          ;
-;         5 data inputs ; 95                          ;
-;         6 data inputs ; 122                         ;
+;         1 data inputs ; 2                           ;
+;         2 data inputs ; 43                          ;
+;         3 data inputs ; 61                          ;
+;         4 data inputs ; 93                          ;
+;         5 data inputs ; 107                         ;
+;         6 data inputs ; 146                         ;
 ;     shared            ; 10                          ;
 ;         0 data inputs ; 1                           ;
 ;         1 data inputs ; 2                           ;
 ;         2 data inputs ; 6                           ;
 ;         3 data inputs ; 1                           ;
-; boundary_port         ; 54                          ;
+; boundary_port         ; 56                          ;
 ; generic_pll           ; 1                           ;
 ; stratixv_ram_block    ; 9                           ;
 ;                       ;                             ;
 ; Max LUT depth         ; 11.50                       ;
-; Average LUT depth     ; 4.81                        ;
+; Average LUT depth     ; 4.33                        ;
 +-----------------------+-----------------------------+
 
 
@@ -1487,7 +1650,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
-    Info: Processing started: Tue Nov 24 15:26:55 2026
+    Info: Processing started: Tue Nov 24 16:08:38 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off platformer -c platformer
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 6 of the 6 processors detected
@@ -1499,48 +1662,59 @@ Info (12021): Found 1 design units, including 1 entities, in source file vga_add
     Info (12023): Found entity 1: vga_address_translator File: C:/intelFPGA/platformer/vga_address_translator.v Line: 4
 Info (12021): Found 1 design units, including 1 entities, in source file vga_adapter.v
     Info (12023): Found entity 1: vga_adapter File: C:/intelFPGA/platformer/vga_adapter.v Line: 42
-Info (12021): Found 11 design units, including 11 entities, in source file platformer.v
+Info (12021): Found 12 design units, including 12 entities, in source file platformer.v
     Info (12023): Found entity 1: platformer File: C:/intelFPGA/platformer/platformer.v Line: 3
-    Info (12023): Found entity 2: vga_arbiter File: C:/intelFPGA/platformer/platformer.v Line: 185
-    Info (12023): Found entity 3: scene_color File: C:/intelFPGA/platformer/platformer.v Line: 210
-    Info (12023): Found entity 4: scene_draw File: C:/intelFPGA/platformer/platformer.v Line: 243
-    Info (12023): Found entity 5: game_over File: C:/intelFPGA/platformer/platformer.v Line: 291
-    Info (12023): Found entity 6: bird_left File: C:/intelFPGA/platformer/platformer.v Line: 372
-    Info (12023): Found entity 7: UpDn_count File: C:/intelFPGA/platformer/platformer.v Line: 602
-    Info (12023): Found entity 8: Up_count File: C:/intelFPGA/platformer/platformer.v Line: 621
-    Info (12023): Found entity 9: bird_right File: C:/intelFPGA/platformer/platformer.v Line: 636
-    Info (12023): Found entity 10: player_object File: C:/intelFPGA/platformer/platformer.v Line: 867
-    Info (12023): Found entity 11: regn File: C:/intelFPGA/platformer/platformer.v Line: 1182
+    Info (12023): Found entity 2: vga_arbiter File: C:/intelFPGA/platformer/platformer.v Line: 217
+    Info (12023): Found entity 3: scene_color File: C:/intelFPGA/platformer/platformer.v Line: 242
+    Info (12023): Found entity 4: scene_draw File: C:/intelFPGA/platformer/platformer.v Line: 275
+    Info (12023): Found entity 5: game_over File: C:/intelFPGA/platformer/platformer.v Line: 323
+    Info (12023): Found entity 6: bird_left File: C:/intelFPGA/platformer/platformer.v Line: 404
+    Info (12023): Found entity 7: UpDn_count File: C:/intelFPGA/platformer/platformer.v Line: 634
+    Info (12023): Found entity 8: Up_count File: C:/intelFPGA/platformer/platformer.v Line: 653
+    Info (12023): Found entity 9: bird_right File: C:/intelFPGA/platformer/platformer.v Line: 668
+    Info (12023): Found entity 10: player_object File: C:/intelFPGA/platformer/platformer.v Line: 899
+    Info (12023): Found entity 11: regn File: C:/intelFPGA/platformer/platformer.v Line: 1214
+    Info (12023): Found entity 12: ps2_keys File: C:/intelFPGA/platformer/platformer.v Line: 1245
+Info (12021): Found 1 design units, including 1 entities, in source file altera_up_ps2_command_out.v
+    Info (12023): Found entity 1: Altera_UP_PS2_Command_Out File: C:/intelFPGA/platformer/Altera_UP_PS2_Command_Out.v Line: 10
+Info (12021): Found 1 design units, including 1 entities, in source file altera_up_ps2_data_in.v
+    Info (12023): Found entity 1: Altera_UP_PS2_Data_In File: C:/intelFPGA/platformer/Altera_UP_PS2_Data_In.v Line: 10
+Info (12021): Found 1 design units, including 1 entities, in source file ps2_controller.v
+    Info (12023): Found entity 1: PS2_Controller File: C:/intelFPGA/platformer/PS2_Controller.v Line: 9
 Info (12127): Elaborating entity "platformer" for the top level hierarchy
-Warning (10230): Verilog HDL assignment warning at platformer.v(33): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 33
-Info (12128): Elaborating entity "scene_draw" for hierarchy "scene_draw:SCENE" File: C:/intelFPGA/platformer/platformer.v Line: 86
-Info (12128): Elaborating entity "scene_color" for hierarchy "scene_draw:SCENE|scene_color:SC" File: C:/intelFPGA/platformer/platformer.v Line: 286
-Info (12128): Elaborating entity "game_over" for hierarchy "game_over:GO" File: C:/intelFPGA/platformer/platformer.v Line: 94
-Warning (10230): Verilog HDL assignment warning at platformer.v(317): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 317
-Warning (10230): Verilog HDL assignment warning at platformer.v(320): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 320
-Info (12128): Elaborating entity "vga_arbiter" for hierarchy "vga_arbiter:ARB" File: C:/intelFPGA/platformer/platformer.v Line: 98
-Info (12128): Elaborating entity "bird_left" for hierarchy "bird_left:BIRD" File: C:/intelFPGA/platformer/platformer.v Line: 116
-Warning (10230): Verilog HDL assignment warning at platformer.v(459): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 459
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U2" File: C:/intelFPGA/platformer/platformer.v Line: 491
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U1" File: C:/intelFPGA/platformer/platformer.v Line: 495
-Info (12128): Elaborating entity "Up_count" for hierarchy "bird_left:BIRD|Up_count:U6" File: C:/intelFPGA/platformer/platformer.v Line: 506
-Info (12128): Elaborating entity "player_object" for hierarchy "player_object:PLAYER_INST" File: C:/intelFPGA/platformer/platformer.v Line: 144
-Warning (10230): Verilog HDL assignment warning at platformer.v(929): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 929
-Warning (10230): Verilog HDL assignment warning at platformer.v(983): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 983
-Warning (10230): Verilog HDL assignment warning at platformer.v(985): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 985
-Warning (10230): Verilog HDL assignment warning at platformer.v(986): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 986
-Warning (10230): Verilog HDL assignment warning at platformer.v(1014): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1014
-Warning (10230): Verilog HDL assignment warning at platformer.v(1022): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1022
-Warning (10270): Verilog HDL Case Statement warning at platformer.v(1086): incomplete case statement has no default case item File: C:/intelFPGA/platformer/platformer.v Line: 1086
-Warning (10230): Verilog HDL assignment warning at platformer.v(1158): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 1158
-Warning (10230): Verilog HDL assignment warning at platformer.v(1159): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1159
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "player_object:PLAYER_INST|UpDn_count:U3" File: C:/intelFPGA/platformer/platformer.v Line: 1042
-Info (12128): Elaborating entity "Up_count" for hierarchy "player_object:PLAYER_INST|Up_count:U_slow" File: C:/intelFPGA/platformer/platformer.v Line: 1048
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U7" File: C:/intelFPGA/platformer/platformer.v Line: 1168
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U8" File: C:/intelFPGA/platformer/platformer.v Line: 1170
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U9" File: C:/intelFPGA/platformer/platformer.v Line: 1173
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U10" File: C:/intelFPGA/platformer/platformer.v Line: 1177
-Info (12128): Elaborating entity "vga_adapter" for hierarchy "vga_adapter:VGA" File: C:/intelFPGA/platformer/platformer.v Line: 176
+Warning (10230): Verilog HDL assignment warning at platformer.v(37): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 37
+Info (12128): Elaborating entity "scene_draw" for hierarchy "scene_draw:SCENE" File: C:/intelFPGA/platformer/platformer.v Line: 90
+Info (12128): Elaborating entity "scene_color" for hierarchy "scene_draw:SCENE|scene_color:SC" File: C:/intelFPGA/platformer/platformer.v Line: 318
+Info (12128): Elaborating entity "game_over" for hierarchy "game_over:GO" File: C:/intelFPGA/platformer/platformer.v Line: 98
+Warning (10230): Verilog HDL assignment warning at platformer.v(349): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 349
+Warning (10230): Verilog HDL assignment warning at platformer.v(352): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 352
+Info (12128): Elaborating entity "vga_arbiter" for hierarchy "vga_arbiter:ARB" File: C:/intelFPGA/platformer/platformer.v Line: 102
+Info (12128): Elaborating entity "bird_left" for hierarchy "bird_left:BIRD" File: C:/intelFPGA/platformer/platformer.v Line: 120
+Warning (10230): Verilog HDL assignment warning at platformer.v(491): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 491
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U2" File: C:/intelFPGA/platformer/platformer.v Line: 523
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U1" File: C:/intelFPGA/platformer/platformer.v Line: 527
+Info (12128): Elaborating entity "Up_count" for hierarchy "bird_left:BIRD|Up_count:U6" File: C:/intelFPGA/platformer/platformer.v Line: 538
+Info (12128): Elaborating entity "PS2_Controller" for hierarchy "PS2_Controller:PS2" File: C:/intelFPGA/platformer/platformer.v Line: 143
+Info (12128): Elaborating entity "Altera_UP_PS2_Data_In" for hierarchy "PS2_Controller:PS2|Altera_UP_PS2_Data_In:PS2_Data_In" File: C:/intelFPGA/platformer/PS2_Controller.v Line: 246
+Info (12128): Elaborating entity "Altera_UP_PS2_Command_Out" for hierarchy "PS2_Controller:PS2|Altera_UP_PS2_Command_Out:PS2_Command_Out" File: C:/intelFPGA/platformer/PS2_Controller.v Line: 266
+Info (12128): Elaborating entity "ps2_keys" for hierarchy "ps2_keys:KEYS" File: C:/intelFPGA/platformer/platformer.v Line: 154
+Info (12128): Elaborating entity "player_object" for hierarchy "player_object:PLAYER_INST" File: C:/intelFPGA/platformer/platformer.v Line: 176
+Warning (10230): Verilog HDL assignment warning at platformer.v(961): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 961
+Warning (10230): Verilog HDL assignment warning at platformer.v(1015): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 1015
+Warning (10230): Verilog HDL assignment warning at platformer.v(1017): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 1017
+Warning (10230): Verilog HDL assignment warning at platformer.v(1018): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 1018
+Warning (10230): Verilog HDL assignment warning at platformer.v(1046): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1046
+Warning (10230): Verilog HDL assignment warning at platformer.v(1054): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1054
+Warning (10270): Verilog HDL Case Statement warning at platformer.v(1118): incomplete case statement has no default case item File: C:/intelFPGA/platformer/platformer.v Line: 1118
+Warning (10230): Verilog HDL assignment warning at platformer.v(1190): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 1190
+Warning (10230): Verilog HDL assignment warning at platformer.v(1191): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1191
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "player_object:PLAYER_INST|UpDn_count:U3" File: C:/intelFPGA/platformer/platformer.v Line: 1074
+Info (12128): Elaborating entity "Up_count" for hierarchy "player_object:PLAYER_INST|Up_count:U_slow" File: C:/intelFPGA/platformer/platformer.v Line: 1080
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U7" File: C:/intelFPGA/platformer/platformer.v Line: 1200
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U8" File: C:/intelFPGA/platformer/platformer.v Line: 1202
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U9" File: C:/intelFPGA/platformer/platformer.v Line: 1205
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U10" File: C:/intelFPGA/platformer/platformer.v Line: 1209
+Info (12128): Elaborating entity "vga_adapter" for hierarchy "vga_adapter:VGA" File: C:/intelFPGA/platformer/platformer.v Line: 208
 Info (12128): Elaborating entity "vga_address_translator" for hierarchy "vga_adapter:VGA|vga_address_translator:user_input_translator" File: C:/intelFPGA/platformer/vga_adapter.v Line: 128
 Info (12128): Elaborating entity "altsyncram" for hierarchy "vga_adapter:VGA|altsyncram:VideoMemory" File: C:/intelFPGA/platformer/vga_adapter.v Line: 151
 Info (12130): Elaborated megafunction instantiation "vga_adapter:VGA|altsyncram:VideoMemory" File: C:/intelFPGA/platformer/vga_adapter.v Line: 151
@@ -1593,25 +1767,26 @@ Info (12128): Elaborating entity "altpll_80u" for hierarchy "vga_adapter:VGA|vga
 Info (12128): Elaborating entity "vga_controller" for hierarchy "vga_adapter:VGA|vga_controller:controller" File: C:/intelFPGA/platformer/vga_adapter.v Line: 188
 Warning (12241): 2 hierarchies have connectivity warnings - see the Connectivity Checks report folder
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "VGA_SYNC_N" is stuck at VCC File: C:/intelFPGA/platformer/platformer.v Line: 54
+    Warning (13410): Pin "VGA_SYNC_N" is stuck at VCC File: C:/intelFPGA/platformer/platformer.v Line: 58
 Info (286030): Timing-Driven Synthesis is running
-Info (17049): 5 registers lost all their fanouts during netlist optimizations.
+Info (17049): 24 registers lost all their fanouts during netlist optimizations.
 Info (144001): Generated suppressed messages file C:/intelFPGA/platformer/output_files/platformer.map.smsg
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 5 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
 Warning: RST port on the PLL is not properly connected on instance vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component|altpll_80u:auto_generated|generic_pll1. The reset port on the PLL should be connected. If the PLL loses lock for any reason, you might need to manually reset the PLL in order to re-establish lock to the reference clock. File: C:/intelFPGA/platformer/db/altpll_80u.tdf Line: 34
     Info: Must be connected
-Info (21057): Implemented 711 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 854 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 15 input pins
     Info (21059): Implemented 39 output pins
-    Info (21061): Implemented 647 logic cells
+    Info (21060): Implemented 2 bidirectional pins
+    Info (21061): Implemented 788 logic cells
     Info (21064): Implemented 9 RAM segments
     Info (21065): Implemented 1 PLLs
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 18 warnings
     Info: Peak virtual memory: 4890 megabytes
-    Info: Processing ended: Tue Nov 24 15:27:04 2026
-    Info: Elapsed time: 00:00:09
-    Info: Total CPU time (on all processors): 00:00:18
+    Info: Processing ended: Tue Nov 24 16:08:46 2026
+    Info: Elapsed time: 00:00:08
+    Info: Total CPU time (on all processors): 00:00:17
 
 
 +------------------------------------------+
