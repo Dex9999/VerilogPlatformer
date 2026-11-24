@@ -6,14 +6,34 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     parameter COLOR_DEPTH = 3;        // 9 6 3
     parameter nX = 8;
     parameter nY = 7;
+	 
 
     // scene layout
     parameter YSCREEN = 120;
     parameter GROUND_HEIGHT = 8;
-    parameter BG_COLOR = 3'b000;
+    parameter BG_COLOR = 3'b001; // blue bg
+	 parameter GROUND_COLOR = 3'b110;
+	 
+    parameter PLAT_COLOR = 3'b011;   // cyan
 
     localparam GROUND_Y = YSCREEN - GROUND_HEIGHT;   // first ground row (112)
     localparam PLAYER_Y = GROUND_Y - 1 - 6;          // sprite is 13 tall, centred on Y -> bottom row = Y + 6
+    
+	 // platform list. 0 is ground 
+    //   idx : x0..x1   top row
+    //    0  : 0..159   112 (ground)
+    //    1  : 10..50    96
+    //    2  : 40..80    80
+    //    3  : 70..110   64
+    //    4  : 100..140  48
+    // platforms are semisolid: jump up through them, land on top.
+    // out of the bird's rows for now
+    localparam NPLAT = 5;
+    localparam PLAT_H = 3;
+    localparam [7:0] GROUND_Y8 = YSCREEN - GROUND_HEIGHT;
+    localparam [NPLAT*8-1:0] PLAT_X0 = {8'd100, 8'd70, 8'd40, 8'd10, 8'd0};
+    localparam [NPLAT*8-1:0] PLAT_X1 = {8'd140, 8'd110, 8'd80, 8'd50, 8'd159};
+    localparam [NPLAT*8-1:0] PLAT_Y  = {8'd48,  8'd64,  8'd80, 8'd96, GROUND_Y8};
 
     // bird
     parameter BIRD_KK = 19;                      // bird speed: smaller = faster
@@ -57,7 +77,9 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     wire sc_write, sc_done;
 
     wire scene_resetn = Resetn & ~sw_over & ~mode_chg;
-    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR)) SCENE
+    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR), .GROUND_COLOR(GROUND_COLOR),
+                 .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                 .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCENE
         (CLOCK_50, scene_resetn, sc_x, sc_y, sc_color, sc_write, sc_done);
 
     // game over screen ONLY SW[0] = 1
@@ -90,9 +112,11 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
     wire player_resetn = Resetn & sc_done & ~sw_bird & ~sw_over & ~mode_chg;
 
-    // KEY[1] = right, KEY[3] = left, KEY[2] = yell
-    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR)
-                    ) PLAYER_INST (
+    // KEY[1] = right, KEY[3] = left, KEY[2] = jump, SW[2] = yell
+    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR), .GROUND_Y(GROUND_Y),
+                    .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
+                    .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                    .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) PLAYER_INST (
         .Resetn(player_resetn),
         .Clock(CLOCK_50),
         .key_right(~KEY[1]),
@@ -144,12 +168,50 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
 endmodule
 
+// Used by scene_draw to paint, and by the player to erase without damaging platforms.
+module scene_color (x, y, color);
+    parameter GROUND_Y     = 112;
+    parameter BG_COLOR     = 3'b000;
+    parameter GROUND_COLOR = 3'b110;
+    parameter PLAT_COLOR   = 3'b011;
+    parameter NPLAT  = 5;
+    parameter PLAT_H = 3;
+    parameter [NPLAT*8-1:0] PLAT_X0 = 0;
+    parameter [NPLAT*8-1:0] PLAT_X1 = 0;
+    parameter [NPLAT*8-1:0] PLAT_Y  = 0;
 
-// clears to black + ground
+    input  wire [7:0] x;
+    input  wire [6:0] y;
+    output wire [2:0] color;
+
+    wire [NPLAT*8-1:0] pX0 = PLAT_X0;
+    wire [NPLAT*8-1:0] pX1 = PLAT_X1;
+    wire [NPLAT*8-1:0] pY  = PLAT_Y;
+
+    integer i;
+    reg hit;
+    always @(*) begin
+        hit = 1'b0;
+        for (i = 0; i < NPLAT; i = i + 1)
+            if (x >= pX0[i*8 +: 8] && x <= pX1[i*8 +: 8] &&
+                y >= pY[i*8 +: 8] && y < pY[i*8 +: 8] + PLAT_H)
+                hit = 1'b1;
+    end
+
+    assign color = (y >= GROUND_Y) ? GROUND_COLOR : (hit ? PLAT_COLOR : BG_COLOR);
+endmodule
+
+// now paints with the sky + ground +platforms
 module scene_draw (clock, resetn, x, y, color, write, done);
     parameter GROUND_Y = 112;
     parameter BG_COLOR = 3'b000;
-    parameter GROUND_COLOR     = 3'b110;   // ground body (red/brown)
+    parameter GROUND_COLOR = 3'b110;
+    parameter PLAT_COLOR   = 3'b011;
+    parameter NPLAT  = 5;
+    parameter PLAT_H = 3;
+    parameter [NPLAT*8-1:0] PLAT_X0 = 0;
+    parameter [NPLAT*8-1:0] PLAT_X1 = 0;
+    parameter [NPLAT*8-1:0] PLAT_Y  = 0;
 
     input clock, resetn;
     output reg [7:0] x;
@@ -181,7 +243,10 @@ module scene_draw (clock, resetn, x, y, color, write, done);
         end
     end
 
-    assign color = (y <  GROUND_Y) ? BG_COLOR : GROUND_COLOR;
+    scene_color #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR), .GROUND_COLOR(GROUND_COLOR),
+                  .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                  .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SC (x, y, color);
+
     assign write = ~done & resetn;
 endmodule
 
@@ -701,23 +766,33 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
 
 endmodule
 
-//added gravity and jumping
+//added gravity and jumping, collisions with platforms
 module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pressed, VGA_x, VGA_y, VGA_color, VGA_write);
     parameter XOFFSET = 80;
-    parameter YOFFSET = 60;
+    parameter YOFFSET = 105; // start on ground?
     parameter BOX_SIZE_X = 11;
     parameter BOX_SIZE_Y = 13;
     parameter XSCREEN = 160;
     parameter KK = 20;
     parameter BG_COLOR = 3'b000;
+	 
+	 parameter GROUND_Y     = 112;
+    parameter GROUND_COLOR = 3'b110;
+    parameter PLAT_COLOR   = 3'b011;
+    parameter NPLAT  = 5;
+    parameter PLAT_H = 3;
+    parameter [NPLAT*8-1:0] PLAT_X0 = 0;
+    parameter [NPLAT*8-1:0] PLAT_X1 = 0;
+    parameter [NPLAT*8-1:0] PLAT_Y  = 0;
 
 
     // physics (all in pixels, one redraw = 2^KK clocks)
-    parameter FLOOR_Y  = YOFFSET;   // centre row when standing (the start row)
     parameter JUMP_V   = 6;         // upward speed given by a jump (pixels per tick)
-    parameter GRAVITY  = 0.5;         // speed change per tick (pixels per tick^2)
+    parameter GRAVITY  = 1;         // speed change per tick (pixels per tick^2)
     parameter MAX_FALL = 6;         // max falling speed
-    localparam CEIL_Y  = BOX_SIZE_Y >> 1;   // highest centre row (sprite top at screen row 0)
+    localparam HALF_X  = BOX_SIZE_X >> 1;   // 5
+    localparam HALF_Y  = BOX_SIZE_Y >> 1;   // feet row = centre row + HALF of Y
+    localparam CEIL_Y  = HALF_Y;            // ceiling check
 
     parameter A = 3'b000, B = 3'b001, C = 3'b010, D = 3'b011, E = 3'b100,
               F = 3'b101, G = 3'b110, H = 3'b111;
@@ -749,16 +824,12 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     wire move_dir = key_right;
 
     // clamp at the left/right screen edge
-    localparam HALF_X = BOX_SIZE_X >> 1;
     wire can_right = (X + HALF_X + 1 < XSCREEN);
     wire can_left  = (X > HALF_X);
     wire move_ok = (key_right && can_right) || (key_left && !key_right && can_left);
 
     
     reg signed [4:0] vy;  // vertical speed in pixels per tick
-
-    // collision check with platform
-    wire on_floor = (Y >= FLOOR_Y);
 
     // jump latched so short tap between ticks isn't missed
     reg jump_req;
@@ -770,31 +841,68 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
         else if (jump_pressed)
             jump_req <= 1'b1; // only update if pressed and cur state != E
 
-    wire airborne   = (Y < FLOOR_Y) || (vy != 0); // first unnessecary?
-    wire jump_start = jump_req && on_floor; // also check if on floor/able to jump
-
+	 // platform collision checked every tick
+    //   supported : feet on top of a platform
+    //   landed    : this tick's fall would cross a platform top
+    wire [NPLAT*8-1:0] pX0 = PLAT_X0;
+    wire [NPLAT*8-1:0] pX1 = PLAT_X1;
+    wire [NPLAT*8-1:0] pY  = PLAT_Y;
+	 
     // next velocity / next row for this tick
+    reg supported;
     reg signed [4:0] vy_n;
     reg signed [8:0] y_try;
     reg        [6:0] Y_n;
+	 
+	 integer i;
+    integer bnow, btry, ptop, qx0, qx1, land_row;
+    reg landed, ovl;
 
     always @(*) begin
-        // update velocity to add
-        if (on_floor && jump_req)             vy_n = -JUMP_V;          // jumping
-        else if (on_floor && vy >= 0)         vy_n = 0;                // standing
-        else if (vy + GRAVITY > MAX_FALL)     vy_n = MAX_FALL;         // max fall speed
-        else                                  vy_n = vy + GRAVITY;     // regular gravity
+        bnow = Y + HALF_Y;  // current feet row position
 
-        // update position with velocity
+        // colliding with platform
+        supported = 1'b0;
+        for (i = 0; i < NPLAT; i = i + 1) begin
+            ptop = pY[i*8 +: 8];
+            qx0  = pX0[i*8 +: 8];
+            qx1  = pX1[i*8 +: 8];
+            if ((X + HALF_X >= qx0) && (X <= qx1 + HALF_X) && (bnow == ptop - 1))
+                supported = 1'b1;
+        end
+
+        // update velocity 
+        if (supported && jump_req)            vy_n = -JUMP_V;          // jumping
+        else if (supported && vy >= 0)        vy_n = 0;                // standing
+        else if (vy + GRAVITY > MAX_FALL)     vy_n = MAX_FALL;         // max falling speed
+        else                                  vy_n = vy + GRAVITY;     // normal gravity
+
+        // update position
         y_try = $signed({2'b00, Y}) + vy_n;
         Y_n   = y_try[6:0];
+        btry  = y_try + HALF_Y;
 
-        // check floor/ceil bounds
-        if (y_try >= FLOOR_Y) begin           
-            Y_n  = FLOOR_Y;
+        // landing this tick?
+        landed   = 1'b0;
+        land_row = 0;
+        for (i = 0; i < NPLAT; i = i + 1) begin
+            ptop = pY[i*8 +: 8];
+            qx0  = pX0[i*8 +: 8];
+            qx1  = pX1[i*8 +: 8];
+            ovl  = (X + HALF_X >= qx0) && (X <= qx1 + HALF_X);
+            if (ovl && vy_n >= 0 && bnow <= ptop - 1 && btry >= ptop - 1) begin
+                // take the highest platform reached
+                if (!landed || (ptop - 1 - HALF_Y) < land_row)
+                    land_row = ptop - 1 - HALF_Y;
+                landed = 1'b1;
+            end
+        end
+
+        if (landed) begin
+            Y_n  = land_row[6:0];
             vy_n = 0;
         end
-        else if (y_try < CEIL_Y) begin           
+        else if (y_try < CEIL_Y) begin  // hit the ceiling
             Y_n  = CEIL_Y;
             vy_n = 0;
         end
@@ -810,6 +918,9 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
             Y  <= Y_n;
             vy <= vy_n;
         end
+		  
+	 wire airborne   = !supported || (vy != 0);
+    wire jump_start = jump_req && supported;
 
     // redraw when: init, horizontal move, yell change, jump, or in the air
     reg first;        // 1 until the first draw has happened
@@ -927,6 +1038,17 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
                 obj_color = 3'b000;
         end
     end
+	 
+	 // current screen coords
+    wire [7:0] px = X - HALF_X + XC;
+    wire [6:0] py = Y - HALF_Y + YC;
+
+    // what colour to erase to (platform/ground/sky)
+    wire [2:0] scene_px;
+    scene_color #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR), .GROUND_COLOR(GROUND_COLOR),
+                  .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                  .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCN (px, py, scene_px);
+
 
     regn U7 (X - (BOX_SIZE_X >> 1) + XC, Resetn, 1'b1, Clock, VGA_x);
         defparam U7.n = 8;
@@ -936,7 +1058,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     regn U9 (write, Resetn, 1'b1, Clock, VGA_write);
         defparam U9.n = 1;
 
-    wire [2:0] color_next = erase ? BG_COLOR : obj_color;
+    wire [2:0] color_next = erase ? scene_px : obj_color;
     regn U10 (color_next, Resetn, 1'b1, Clock, VGA_color);
         defparam U10.n = 3;
 
