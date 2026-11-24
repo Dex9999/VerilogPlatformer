@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Tue Nov 24 14:48:21 2026
+Analysis & Synthesis Status : Successful - Tue Nov 24 15:27:04 2026
 Quartus Prime Version : 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 Revision Name : platformer
 Top-level Entity Name : platformer
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 205
+Total registers : 200
 Total pins : 54
 Total virtual pins : 0
 Total block memory bits : 57,600

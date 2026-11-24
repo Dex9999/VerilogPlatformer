@@ -1,12 +1,12 @@
-Fitter Status : Successful - Tue Nov 24 14:49:29 2026
+Fitter Status : Successful - Tue Nov 24 15:28:35 2026
 Quartus Prime Version : 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 Revision Name : platformer
 Top-level Entity Name : platformer
 Family : Cyclone V
 Device : 5CSEMA5F31C6
 Timing Models : Final
-Logic utilization (in ALMs) : 337 / 32,070 ( 1 % )
-Total registers : 265
+Logic utilization (in ALMs) : 373 / 32,070 ( 1 % )
+Total registers : 244
 Total pins : 54 / 457 ( 12 % )
 Total virtual pins : 0
 Total block memory bits : 57,600 / 4,065,280 ( 1 % )

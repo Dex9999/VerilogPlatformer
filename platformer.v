@@ -37,8 +37,9 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
     // bird
     parameter BIRD_KK = 19;                      // bird speed: smaller = faster
-    localparam [6:0] BIRD_Y = 7'd30;             // row the bird flies on
-
+    localparam [6:0] BIRD_Y = 7'd75;             // row the bird flies on
+		// make it hit platform to test erase 
+		
     input [3:0] KEY;
     input [9:0] SW;
     output wire [9:0] LEDR;
@@ -52,25 +53,27 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     output wire VGA_BLANK_N;
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
+	 
+	 //player x,y to stop overwrites
+	 wire [7:0] pl_x;
+    wire [6:0] pl_y;
 
     // synchronize inputs to stop random pixels bug
-    reg [1:0] rst_s, over_s, bird_s;
+    reg [1:0] rst_s, over_s;
     always @(posedge CLOCK_50) begin
         rst_s  <= {rst_s[0],  KEY[0]};
         over_s <= {over_s[0], SW[0]};
-        bird_s <= {bird_s[0], SW[1]};
     end
 
     wire Resetn  = rst_s[1];     // active low, now synchronous
     wire sw_over = over_s[1];    // game over mode
-    wire sw_bird = bird_s[1];    // bird mode
 
     // one-clock pulse whenever the mode changes
     reg [1:0] mode_q;
-    always @(posedge CLOCK_50) mode_q <= {sw_over, sw_bird};
-    wire mode_chg = ({sw_over, sw_bird} != mode_q);
+    always @(posedge CLOCK_50) mode_q <= sw_over;
+    wire mode_chg = (sw_over != mode_q);
 
-    // redraw when leaving every scene now, bird mode isn't weird
+    // main game scene
     wire [nX-1:0] sc_x;
 	 wire [nY-1:0] sc_y;
     wire [COLOR_DEPTH-1:0] sc_color;
@@ -90,30 +93,34 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
     game_over GO (CLOCK_50, Resetn, sw_over, go_x, go_y, go_color, go_write, go_done);
 
+	 // bus arbiter between player and bird
+    wire player_req, player_gnt, bird_req, bird_gnt;
+    vga_arbiter ARB (CLOCK_50, Resetn, player_req, bird_req, player_gnt, bird_gnt);
+
     // Bird: ONLY in bird mode
     wire [7:0] bird_x;
     wire [6:0] bird_y;
     wire [2:0] bird_color;
     wire bird_write;
-    wire bird_req, bird_done, bird_busy;
+    wire bird_done, bird_busy;
     wire [nX-1:0] bird_obj_x;
     wire [nY-1:0] bird_obj_y;
 
-    wire bird_resetn = Resetn & sw_bird & ~sw_over & sc_done & ~mode_chg;
+    wire bird_resetn = Resetn & ~sw_over & sc_done & ~mode_chg;
 
     bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR), .GROUND_Y(GROUND_Y),
                 .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
                 .NPLAT(NPLAT), .PLAT_H(PLAT_H),
                 .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) BIRD (
-        bird_resetn, CLOCK_50, 1'b1, bird_req, bird_x, bird_y, bird_color, bird_write,
-        1'b1, bird_done, bird_busy, BIRD_Y, bird_obj_x, bird_obj_y);
+        bird_resetn, CLOCK_50, bird_gnt, bird_req, bird_x, bird_y, bird_color, bird_write,
+        1'b1, bird_done, bird_busy, BIRD_Y, bird_obj_x, bird_obj_y, pl_x, pl_y);
 		  
     wire [7:0] player_x;
     wire [6:0] player_y;
     wire [2:0] player_color;
     wire player_write;
 
-    wire player_resetn = Resetn & sc_done & ~sw_bird & ~sw_over & ~mode_chg;
+    wire player_resetn = Resetn & sc_done & ~sw_over & ~mode_chg;
 
     // KEY[1] = right, KEY[3] = left, KEY[2] = jump, SW[2] = yell
     player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR), .GROUND_Y(GROUND_Y),
@@ -126,29 +133,31 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
         .key_left(~KEY[3]),
         .yell_pressed(SW[2]),
         .jump_pressed(~KEY[2]),
+		  .gnt(player_gnt),
+        .req(player_req),
         .VGA_x(player_x),
         .VGA_y(player_y),
         .VGA_color(player_color),
-        .VGA_write(player_write)
+        .VGA_write(player_write),
+        .obj_x(pl_x),
+        .obj_y(pl_y)
     );
 
     assign LEDR = SW;
 
-    // ------------------------------------------------------------------
     // Who drives the VGA adapter (first match wins):
-    //   game over mode               -> game over screen
-    //   scene not finished drawing   -> scene_draw
-    //   bird mode                    -> bird
-    //   otherwise                    -> player
-    // ------------------------------------------------------------------
-    wire sel_go    = sw_over;
+    //   game over mode              -> game over screen
+    //   scene not finished drawing  -> scene_draw
+    //   arbiter granted the bird    -> bird
+    //   arbiter granted the player  -> player
+	 wire sel_go    = sw_over;
     wire sel_scene = ~sw_over & ~sc_done;
-    wire sel_bird  = ~sw_over & sc_done & sw_bird;
 
-    wire [7:0] adp_x = sel_go ? go_x : (sel_scene ? sc_x : (sel_bird ? bird_x : player_x));
-    wire [6:0] adp_y = sel_go ? go_y : (sel_scene ? sc_y : (sel_bird ? bird_y : player_y));
-    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_scene ? sc_color : (sel_bird ? bird_color : player_color));
-    wire adp_write = sel_go ? go_write : (sel_scene ? sc_write : (sel_bird ? bird_write : player_write));
+    wire [7:0] adp_x = sel_go ? go_x : (sel_scene ? sc_x : (bird_gnt ? bird_x : player_x));
+    wire [6:0] adp_y = sel_go ? go_y : (sel_scene ? sc_y : (bird_gnt ? bird_y : player_y));
+    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_scene ? sc_color : (bird_gnt ? bird_color : player_color));
+    wire adp_write = sel_go ? go_write : (sel_scene ? sc_write :
+                     (bird_gnt ? bird_write : (player_gnt ? player_write : 1'b0)));
 
     vga_adapter VGA (
             .resetn(Resetn),
@@ -170,6 +179,32 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
         defparam VGA.COLOR_DEPTH = COLOR_DEPTH;
 
 endmodule
+
+// give access to the VGA write port to one module at a time. A grant is held for as
+// a full erase/draw pass (keep high until done)
+module vga_arbiter (clock, resetn, req_p, req_b, gnt_p, gnt_b);
+    input wire clock, resetn, req_p, req_b;
+    output wire gnt_p, gnt_b;
+
+    reg [1:0] owner;   // 00 = nobody, 01 = player, 10 = bird
+    always @(posedge clock)
+        if (!resetn)
+            owner <= 2'b00;
+        else if (owner == 2'b01 && req_p)
+            owner <= 2'b01;                 // player keeps bus
+        else if (owner == 2'b10 && req_b)
+            owner <= 2'b10;                 // bird keeps bus
+        else if (req_p)
+            owner <= 2'b01;
+        else if (req_b)
+            owner <= 2'b10;
+        else
+            owner <= 2'b00;
+
+    assign gnt_p = (owner == 2'b01);
+    assign gnt_b = (owner == 2'b10);
+endmodule
+
 
 // Used by scene_draw to paint, and by the player to erase without damaging platforms.
 module scene_color (x, y, color);
@@ -334,8 +369,7 @@ endmodule
 
 //module birds()
 // implements a moving colored object
-module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y);
-
+module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y, avoid_x, avoid_y);
     parameter RESOLUTION = "160x120"; 
     parameter nX = 8;
     parameter nY = 7;
@@ -384,10 +418,13 @@ module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, s
     output wire [nY-1:0] obj_y;
     output reg done;
     input wire resetn, clock;
-	output wire [7:0] VGA_x; 
-	output wire [6:0] VGA_y; 
-	output wire [2:0] VGA_color;  
+	 output wire [7:0] VGA_x; 
+	 output wire [6:0] VGA_y; 
+	 output wire [2:0] VGA_color;  
     output wire VGA_write; 
+	 
+	 input wire [7:0] avoid_x;   // player box to avoid
+    input wire [6:0] avoid_y;   
 
 
 
@@ -438,7 +475,16 @@ module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, s
                   .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
                   .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCN (px, py, scene_px);
 	 assign VGA_color = erase ? scene_px : px_color;
-	 assign VGA_write = write;                       // pixel write control
+	 
+	 // never write inside the player's box
+    wire signed [9:0] spx = {2'b00, px};
+    wire signed [9:0] spy = {3'b000, py};
+    wire signed [9:0] sax = {2'b00, avoid_x};
+    wire signed [9:0] say = {3'b000, avoid_y};
+    wire in_player = (spx >= sax - 5) && (spx <= sax + 5) &&
+                     (spy >= say - 6) && (spy <= say + 6);
+
+    assign VGA_write = write & ~in_player;
 
 
         // X moves left: enable = Ex, direction 0 = count down
@@ -587,7 +633,7 @@ endmodule
 // bird right
 
 // implements a moving colored object
-module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y);
+module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, y_in, obj_x, obj_y, avoid_x, avoid_y);
 
     parameter RESOLUTION = "160x120"; 
     parameter nX = 8;
@@ -637,10 +683,13 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
     output wire [nY-1:0] obj_y;
     output reg done;
     input wire resetn, clock;
-	output wire [7:0] VGA_x; 
-	output wire [6:0] VGA_y; 
-	output wire [2:0] VGA_color;  
+	 output wire [7:0] VGA_x; 
+	 output wire [6:0] VGA_y; 
+	 output wire [2:0] VGA_color;  
     output wire VGA_write; 
+	 
+	 input wire [7:0] avoid_x;   // player box to avoid
+    input wire [6:0] avoid_y;   
 
 
 
@@ -692,8 +741,16 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
                   .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCN (px, py, scene_px);
 
     assign VGA_color = erase == 0 ? px_color : scene_px;    // pixel color to draw/erase
-	 assign VGA_write = write;                       // pixel write control
+	 
+	 // never write inside the player's box
+    wire signed [9:0] spx = {2'b00, px};
+    wire signed [9:0] spy = {3'b000, py};
+    wire signed [9:0] sax = {2'b00, avoid_x};
+    wire signed [9:0] say = {3'b000, avoid_y};
+    wire in_player = (spx >= sax - 5) && (spx <= sax + 5) &&
+                     (spy >= say - 6) && (spy <= say + 6);
 
+    assign VGA_write = write & ~in_player;
 
         // X moves right: enable = Ex, direction 1 = count up
     UpDn_count U2 (X0, clock, resetn, Ex, Lx, 1'b1, X);
@@ -806,8 +863,8 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
 
 endmodule
 
-//added gravity and jumping, collisions with platforms
-module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pressed, VGA_x, VGA_y, VGA_color, VGA_write);
+//added gravity and jumping, collisions with platforms, update to use arbiter
+module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pressed, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, obj_x, obj_y);
     parameter XOFFSET = 80;
     parameter YOFFSET = 105; // start on ground?
     parameter BOX_SIZE_X = 11;
@@ -835,17 +892,28 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     localparam CEIL_Y  = HALF_Y;            // ceiling check
 
     parameter A = 3'b000, B = 3'b001, C = 3'b010, D = 3'b011, E = 3'b100,
-              F = 3'b101, G = 3'b110, H = 3'b111;
+              F = 3'b101, G = 3'b110, H = 3'b111, I = 4'd8;   // I = wait for grant to write
 
     input wire Resetn, Clock;
     input wire key_right;     // KEY[1]
     input wire key_left;      // KEY[3]
     input wire yell_pressed;  // remap to SW[2] for now (future mic input)
     input wire jump_pressed;  // KEY[2]
-    output wire [7:0] VGA_x;
+    
+	 //arbiter control
+	 input wire gnt;
+    output wire req;
+
+	 output wire [7:0] VGA_x;
     output wire [6:0] VGA_y;
     output wire [2:0] VGA_color;
     output wire VGA_write;
+	 
+	 // give access to x and y so bird/platform doesn't overwrite
+	 output wire [7:0] obj_x;
+    output wire [6:0] obj_y;
+    assign obj_x = X;
+    assign obj_y = Y;
 
     wire [7:0] X, X0;
     reg  [6:0] Y;   // centre row (now a register, for gravity physics)
@@ -854,7 +922,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     reg write, Lxc, Lyc, Exc, Eyc;
     reg erase;
     reg Lx, Ex;
-    reg [2:0] y_Q, Y_D;
+    reg [3:0] y_Q, Y_D;
 
     reg [2:0] obj_color;
 
@@ -985,7 +1053,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     always @ (*)
         case (y_Q)
             A:  Y_D = B;
-            B:  if (redraw && speed_sync) Y_D = C;
+            B:  if (redraw && speed_sync) Y_D = I; //ask for bus first
                 else Y_D = B;
 
             // erase old sprite
@@ -1004,6 +1072,9 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
                 else Y_D = H;
 
             H:  Y_D = B;
+				I:  if (gnt) Y_D = C;  // wait for VGA grant
+                else Y_D = I;
+
             default: Y_D = A;
         endcase
 
@@ -1023,12 +1094,16 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
             F:  begin Exc = 1'b1; write = 1'b1; end
             G:  begin Lxc = 1'b1; Eyc = 1'b1; end
             H:  ;
+				I:  ;
         endcase
     end
+	 
+	 //hold request until done drawing
+	 assign req = (y_Q >= C) && (y_Q <= I);
 
     always @(posedge Clock)
         if (!Resetn)
-            y_Q <= 3'b0;
+            y_Q <= 4'b0;
         else
             y_Q <= Y_D;
 

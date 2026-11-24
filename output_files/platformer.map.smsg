@@ -1,3 +1,4 @@
 Info (10281): Verilog HDL Declaration information at platformer.v(40): object "BIRD_Y" differs only in case from object "bird_y" in the same scope File: C:/intelFPGA/platformer/platformer.v Line: 40
 Info (10281): Verilog HDL Declaration information at platformer.v(20): object "PLAYER_Y" differs only in case from object "player_y" in the same scope File: C:/intelFPGA/platformer/platformer.v Line: 20
-Info (10281): Verilog HDL Declaration information at platformer.v(889): object "pY" differs only in case from object "py" in the same scope File: C:/intelFPGA/platformer/platformer.v Line: 889
+Info (10281): Verilog HDL Declaration information at platformer.v(895): object "I" differs only in case from object "i" in the same scope File: C:/intelFPGA/platformer/platformer.v Line: 895
+Info (10281): Verilog HDL Declaration information at platformer.v(957): object "pY" differs only in case from object "py" in the same scope File: C:/intelFPGA/platformer/platformer.v Line: 957

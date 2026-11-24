@@ -1,12 +1,11 @@
 |platformer
-CLOCK_50 => CLOCK_50.IN5
+CLOCK_50 => CLOCK_50.IN6
 KEY[0] => rst_s[0].DATAIN
 KEY[1] => _.IN1
 KEY[2] => _.IN1
 KEY[3] => _.IN1
 SW[0] => over_s[0].DATAIN
 SW[0] => LEDR[0].DATAIN
-SW[1] => bird_s[0].DATAIN
 SW[1] => LEDR[1].DATAIN
 SW[2] => SW[2].IN1
 SW[3] => LEDR[3].DATAIN
@@ -319,6 +318,22 @@ write <= write.DB_MAX_OUTPUT_PORT_TYPE
 done <= done~reg0.DB_MAX_OUTPUT_PORT_TYPE
 
 
+|platformer|vga_arbiter:ARB
+clock => owner~1.DATAIN
+resetn => owner.OUTPUTSELECT
+resetn => owner.OUTPUTSELECT
+resetn => owner.OUTPUTSELECT
+req_p => always0.IN0
+req_p => owner.OUTPUTSELECT
+req_p => owner.OUTPUTSELECT
+req_p => owner.DATAA
+req_b => always0.IN0
+req_b => owner.DATAA
+req_b => owner.DATAA
+gnt_p <= gnt_p.DB_MAX_OUTPUT_PORT_TYPE
+gnt_b <= gnt_b.DB_MAX_OUTPUT_PORT_TYPE
+
+
 |platformer|bird_left:BIRD
 resetn => resetn.IN5
 clock => clock.IN5
@@ -345,7 +360,7 @@ VGA_y[6] <= py[6].DB_MAX_OUTPUT_PORT_TYPE
 VGA_color[0] <= VGA_color.DB_MAX_OUTPUT_PORT_TYPE
 VGA_color[1] <= VGA_color.DB_MAX_OUTPUT_PORT_TYPE
 VGA_color[2] <= VGA_color.DB_MAX_OUTPUT_PORT_TYPE
-VGA_write <= Selector7.DB_MAX_OUTPUT_PORT_TYPE
+VGA_write <= VGA_write.DB_MAX_OUTPUT_PORT_TYPE
 start => Lx.DATAB
 start => Ly.DATAB
 start => Selector6.IN3
@@ -374,6 +389,36 @@ obj_y[3] <= UpDn_count:U1.port6
 obj_y[4] <= UpDn_count:U1.port6
 obj_y[5] <= UpDn_count:U1.port6
 obj_y[6] <= UpDn_count:U1.port6
+avoid_x[0] => Add2.IN64
+avoid_x[0] => Add3.IN64
+avoid_x[1] => Add2.IN63
+avoid_x[1] => Add3.IN63
+avoid_x[2] => Add2.IN62
+avoid_x[2] => Add3.IN62
+avoid_x[3] => Add2.IN61
+avoid_x[3] => Add3.IN61
+avoid_x[4] => Add2.IN60
+avoid_x[4] => Add3.IN60
+avoid_x[5] => Add2.IN59
+avoid_x[5] => Add3.IN59
+avoid_x[6] => Add2.IN58
+avoid_x[6] => Add3.IN58
+avoid_x[7] => Add2.IN57
+avoid_x[7] => Add3.IN57
+avoid_y[0] => LessThan16.IN64
+avoid_y[0] => LessThan17.IN64
+avoid_y[1] => Add4.IN62
+avoid_y[1] => Add5.IN62
+avoid_y[2] => Add4.IN61
+avoid_y[2] => Add5.IN61
+avoid_y[3] => Add4.IN60
+avoid_y[3] => Add5.IN60
+avoid_y[4] => Add4.IN59
+avoid_y[4] => Add5.IN59
+avoid_y[5] => Add4.IN58
+avoid_y[5] => Add5.IN58
+avoid_y[6] => Add4.IN57
+avoid_y[6] => Add5.IN57
 
 
 |platformer|bird_left:BIRD|scene_color:SCN
@@ -829,6 +874,9 @@ key_left => comb.IN0
 yell_pressed => yell_changed.IN1
 yell_pressed => yell_drawn.DATAB
 jump_pressed => jump_req.OUTPUTSELECT
+gnt => Mux2.IN15
+gnt => Mux0.IN15
+req <= req.DB_MAX_OUTPUT_PORT_TYPE
 VGA_x[0] <= regn:U7.port4
 VGA_x[1] <= regn:U7.port4
 VGA_x[2] <= regn:U7.port4
@@ -848,6 +896,21 @@ VGA_color[0] <= regn:U10.port4
 VGA_color[1] <= regn:U10.port4
 VGA_color[2] <= regn:U10.port4
 VGA_write <= regn:U9.port4
+obj_x[0] <= UpDn_count:UX.port6
+obj_x[1] <= UpDn_count:UX.port6
+obj_x[2] <= UpDn_count:UX.port6
+obj_x[3] <= UpDn_count:UX.port6
+obj_x[4] <= UpDn_count:UX.port6
+obj_x[5] <= UpDn_count:UX.port6
+obj_x[6] <= UpDn_count:UX.port6
+obj_x[7] <= UpDn_count:UX.port6
+obj_y[0] <= Y[0].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[1] <= Y[1].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[2] <= Y[2].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[3] <= Y[3].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[4] <= Y[4].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[5] <= Y[5].DB_MAX_OUTPUT_PORT_TYPE
+obj_y[6] <= Y[6].DB_MAX_OUTPUT_PORT_TYPE
 
 
 |platformer|player_object:PLAYER_INST|UpDn_count:UX
