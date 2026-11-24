@@ -51,7 +51,8 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     wire mode_chg = ({sw_over, sw_bird} != mode_q);
 
     // redraw when leaving every scene now, bird mode isn't weird
-    wire [nY-1:0] sc_y;
+    wire [nX-1:0] sc_x;
+	 wire [nY-1:0] sc_y;
     wire [COLOR_DEPTH-1:0] sc_color;
     wire sc_write, sc_done;
 
@@ -90,12 +91,14 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     wire player_resetn = Resetn & sc_done & ~sw_bird & ~sw_over & ~mode_chg;
 
     // KEY[1] = right, KEY[3] = left, KEY[2] = yell
-    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR)) PLAYER_INST (
+    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR)
+                    ) PLAYER_INST (
         .Resetn(player_resetn),
         .Clock(CLOCK_50),
         .key_right(~KEY[1]),
         .key_left(~KEY[3]),
-        .yell_pressed(~KEY[2]),
+        .yell_pressed(SW[2]),
+        .jump_pressed(~KEY[2]),
         .VGA_x(player_x),
         .VGA_y(player_y),
         .VGA_color(player_color),
@@ -698,9 +701,8 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
 
 endmodule
 
-
-// PLAYER object
-module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, VGA_y, VGA_color, VGA_write);
+//added gravity and jumping
+module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pressed, VGA_x, VGA_y, VGA_color, VGA_write);
     parameter XOFFSET = 80;
     parameter YOFFSET = 60;
     parameter BOX_SIZE_X = 11;
@@ -709,51 +711,114 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, V
     parameter KK = 20;
     parameter BG_COLOR = 3'b000;
 
+
+    // physics (all in pixels, one redraw = 2^KK clocks)
+    parameter FLOOR_Y  = YOFFSET;   // centre row when standing (the start row)
+    parameter JUMP_V   = 6;         // upward speed given by a jump (pixels per tick)
+    parameter GRAVITY  = 0.5;         // speed change per tick (pixels per tick^2)
+    parameter MAX_FALL = 6;         // max falling speed
+    localparam CEIL_Y  = BOX_SIZE_Y >> 1;   // highest centre row (sprite top at screen row 0)
+
     parameter A = 3'b000, B = 3'b001, C = 3'b010, D = 3'b011, E = 3'b100,
               F = 3'b101, G = 3'b110, H = 3'b111;
 
     input wire Resetn, Clock;
-    input wire key_right;    // KEY[1] 
-    input wire key_left;     // KEY[3] 
-    input wire yell_pressed; // KEY[2] 
+    input wire key_right;     // KEY[1]
+    input wire key_left;      // KEY[3]
+    input wire yell_pressed;  // remap to SW[2] for now (future mic input)
+    input wire jump_pressed;  // KEY[2]
     output wire [7:0] VGA_x;
     output wire [6:0] VGA_y;
     output wire [2:0] VGA_color;
     output wire VGA_write;
 
     wire [7:0] X, X0;
-    wire [6:0] Y, Y0;
+    reg  [6:0] Y;   // centre row (now a register, for gravity physics)
     wire [3:0] XC;
     wire [3:0] YC;
     reg write, Lxc, Lyc, Exc, Eyc;
     reg erase;
-    reg Lx, Ly, Ex;
+    reg Lx, Ex;
     reg [2:0] y_Q, Y_D;
 
     reg [2:0] obj_color;
 
     assign X0 = XOFFSET;
-    assign Y0 = YOFFSET;
 
-    // fpga keys to move (placeholder)
+    // direction: right = 1, left = 0
     wire move_dir = key_right;
 
-    // clamp at screen edge
+    // clamp at the left/right screen edge
     localparam HALF_X = BOX_SIZE_X >> 1;
     wire can_right = (X + HALF_X + 1 < XSCREEN);
     wire can_left  = (X > HALF_X);
     wire move_ok = (key_right && can_right) || (key_left && !key_right && can_left);
 
-    // redraw triggers: first draw, movement, or yell change
+    
+    reg signed [4:0] vy;  // vertical speed in pixels per tick
+
+    // collision check with platform
+    wire on_floor = (Y >= FLOOR_Y);
+
+    // jump latched so short tap between ticks isn't missed
+    reg jump_req;
+    always @(posedge Clock)
+        if (!Resetn)
+            jump_req <= 1'b0;
+        else if (y_Q == E)
+            jump_req <= 1'b0;
+        else if (jump_pressed)
+            jump_req <= 1'b1; // only update if pressed and cur state != E
+
+    wire airborne   = (Y < FLOOR_Y) || (vy != 0); // first unnessecary?
+    wire jump_start = jump_req && on_floor; // also check if on floor/able to jump
+
+    // next velocity / next row for this tick
+    reg signed [4:0] vy_n;
+    reg signed [8:0] y_try;
+    reg        [6:0] Y_n;
+
+    always @(*) begin
+        // update velocity to add
+        if (on_floor && jump_req)             vy_n = -JUMP_V;          // jumping
+        else if (on_floor && vy >= 0)         vy_n = 0;                // standing
+        else if (vy + GRAVITY > MAX_FALL)     vy_n = MAX_FALL;         // max fall speed
+        else                                  vy_n = vy + GRAVITY;     // regular gravity
+
+        // update position with velocity
+        y_try = $signed({2'b00, Y}) + vy_n;
+        Y_n   = y_try[6:0];
+
+        // check floor/ceil bounds
+        if (y_try >= FLOOR_Y) begin           
+            Y_n  = FLOOR_Y;
+            vy_n = 0;
+        end
+        else if (y_try < CEIL_Y) begin           
+            Y_n  = CEIL_Y;
+            vy_n = 0;
+        end
+    end
+
+    // apply the physics once per redraw, as X moves in state E
+    always @(posedge Clock)
+        if (!Resetn) begin
+            Y  <= YOFFSET;
+            vy <= 0;
+        end
+        else if (y_Q == E) begin
+            Y  <= Y_n;
+            vy <= vy_n;
+        end
+
+    // redraw when: init, horizontal move, yell change, jump, or in the air
     reg first;        // 1 until the first draw has happened
-    reg yell_drawn;   // yell state used for the current draw (latched in E)
+    reg yell_drawn;   // yell state for the current draw (latched in E)
     wire yell_changed = (yell_pressed != yell_drawn);
-    wire redraw = first | move_ok | yell_changed;
+    wire redraw = first | move_ok | yell_changed | airborne | jump_start;
 
     UpDn_count UX (X0, Clock, Resetn, Ex, Lx, move_dir, X);
         defparam UX.n = 8;
-    UpDn_count UY (Y0, Clock, Resetn, 1'b0, Ly, 1'b0, Y);
-        defparam UY.n = 7;
 
     UpDn_count U3 (4'd0, Clock, Resetn, Exc, Lxc, 1'b1, XC);
         defparam U3.n = 4;
@@ -765,7 +830,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, V
         defparam U_slow.n = KK;
     wire speed_sync = (slow == {KK{1'b1}});
 
-    // next-state fsm
+    //next-state logic
     always @ (*)
         case (y_Q)
             A:  Y_D = B;
@@ -778,7 +843,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, V
             D:  if (YC != BOX_SIZE_Y-1) Y_D = C;
                 else Y_D = E;
 
-            // move + reset pixel counters
+            // move (X and Y) + reset pixel counters
             E:  Y_D = F;
 
             // draw new sprite
@@ -791,17 +856,18 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, V
             default: Y_D = A;
         endcase
 
-    // output drawing fsm
+    // output logic
     always @ (*)
     begin
-        Lx = 1'b0; Ly = 1'b0; Ex = 1'b0; write = 1'b0;
+        Lx = 1'b0; Ex = 1'b0; write = 1'b0;
         Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; erase = 1'b0;
         case (y_Q)
-            A:  begin Lx = 1'b1; Ly = 1'b1; end
+            A:  begin Lx = 1'b1; end
             B:  begin Lxc = 1'b1; Lyc = 1'b1; end
             C:  begin Exc = 1'b1; write = 1'b1; erase = 1'b1; end
             D:  begin Lxc = 1'b1; Eyc = 1'b1; erase = 1'b1; end
-            // reload both counters so the draw pass starts at (0,0)
+            // X moves here (Y is updated in its own always block, also at E);
+            // reload both pixel counters so the draw pass starts at (0,0)
             E:  begin Ex = move_ok; Lxc = 1'b1; Lyc = 1'b1; end
             F:  begin Exc = 1'b1; write = 1'b1; end
             G:  begin Lxc = 1'b1; Eyc = 1'b1; end
@@ -826,7 +892,7 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, VGA_x, V
             yell_drawn <= yell_pressed;
         end
 
-    // 11x13 sprite using 3-bit RGB 
+    // 11x13 sprite using 3-bit RGB
     wire glasses = (YC == 0) || (YC == 4) ||
                    (YC <= 4 && (XC == 0 || XC == 5 || XC == 10));
     wire eyes = (YC == 2) && (XC == 3 || XC == 7);

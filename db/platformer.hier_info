@@ -8,7 +8,7 @@ SW[0] => over_s[0].DATAIN
 SW[0] => LEDR[0].DATAIN
 SW[1] => bird_s[0].DATAIN
 SW[1] => LEDR[1].DATAIN
-SW[2] => LEDR[2].DATAIN
+SW[2] => SW[2].IN1
 SW[3] => LEDR[3].DATAIN
 SW[4] => LEDR[4].DATAIN
 SW[5] => LEDR[5].DATAIN
@@ -496,12 +496,13 @@ Q[18] <= Q[18]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 
 
 |platformer|player_object:PLAYER_INST
-Resetn => Resetn.IN9
-Clock => Clock.IN9
+Resetn => Resetn.IN8
+Clock => Clock.IN8
 key_right => move_dir.IN1
 key_left => comb.IN0
 yell_pressed => yell_changed.IN1
 yell_pressed => yell_drawn.DATAB
+jump_pressed => jump_req.OUTPUTSELECT
 VGA_x[0] <= regn:U7.port4
 VGA_x[1] <= regn:U7.port4
 VGA_x[2] <= regn:U7.port4
@@ -580,58 +581,6 @@ Q[4] <= Q[4]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 Q[5] <= Q[5]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 Q[6] <= Q[6]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 Q[7] <= Q[7]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-
-
-|platformer|player_object:PLAYER_INST|UpDn_count:UY
-R[0] => Q.DATAB
-R[1] => Q.DATAB
-R[2] => Q.DATAB
-R[3] => Q.DATAB
-R[4] => Q.DATAB
-R[5] => Q.DATAB
-R[6] => Q.DATAB
-Clock => Q[0]~reg0.CLK
-Clock => Q[1]~reg0.CLK
-Clock => Q[2]~reg0.CLK
-Clock => Q[3]~reg0.CLK
-Clock => Q[4]~reg0.CLK
-Clock => Q[5]~reg0.CLK
-Clock => Q[6]~reg0.CLK
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-Resetn => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-E => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-L => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-UpDn => Q.OUTPUTSELECT
-Q[0] <= Q[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[1] <= Q[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[2] <= Q[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[3] <= Q[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[4] <= Q[4]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[5] <= Q[5]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-Q[6] <= Q[6]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 
 
 |platformer|player_object:PLAYER_INST|UpDn_count:U3
