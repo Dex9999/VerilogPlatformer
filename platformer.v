@@ -44,8 +44,8 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     localparam [6:0] BIRD_Y = 7'd75;             // row the bird flies on
 		// make it hit platform to test erase 
 		
-    input [3:0] KEY;
-    input [9:0] SW;
+    input wire [3:0] KEY;
+    input wire [9:0] SW;
     output wire [9:0] LEDR;
     input wire CLOCK_50;
 
@@ -283,7 +283,7 @@ module scene_draw (clock, resetn, x, y, color, write, done);
     parameter [NPLAT*8-1:0] PLAT_X1 = 0;
     parameter [NPLAT*8-1:0] PLAT_Y  = 0;
 
-    input clock, resetn;
+    input wire clock, resetn;
     output reg [7:0] x;
     output reg [6:0] y;
     output wire [2:0] color;
@@ -322,7 +322,7 @@ endmodule
 
 module game_over (clock, resetn, start, x, y, color, write, done);
 
-    input clock, resetn, start;
+    input wire clock, resetn, start;
     output reg [7:0] x;
     output reg [6:0] y;
     output wire [2:0] color;
@@ -944,8 +944,6 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
 	 // give access to x and y so bird/platform doesn't overwrite
 	 output wire [7:0] obj_x;
     output wire [6:0] obj_y;
-    assign obj_x = X;
-    assign obj_y = Y;
 
     wire [7:0] X, X0;
     reg  [6:0] Y;   // centre row (now a register, for gravity physics)
@@ -1208,6 +1206,9 @@ module player_object (Resetn, Clock, key_right, key_left, yell_pressed, jump_pre
     wire [2:0] color_next = erase ? scene_px : obj_color;
     regn U10 (color_next, Resetn, 1'b1, Clock, VGA_color);
         defparam U10.n = 3;
+		  
+	 assign obj_x = X; // export x,y for drawing
+    assign obj_y = Y;
 
 endmodule
 
