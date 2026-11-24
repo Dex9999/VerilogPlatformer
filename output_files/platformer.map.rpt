@@ -1,5 +1,5 @@
 Analysis & Synthesis report for platformer
-Tue Nov 24 14:25:32 2026
+Tue Nov 24 14:48:21 2026
 Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
 
 
@@ -24,46 +24,47 @@ Quartus Prime Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
  16. Parameter Settings for User Entity Instance: scene_draw:SCENE
  17. Parameter Settings for User Entity Instance: scene_draw:SCENE|scene_color:SC
  18. Parameter Settings for User Entity Instance: bird_left:BIRD
- 19. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U2
- 20. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U1
- 21. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U3
- 22. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U4
- 23. Parameter Settings for User Entity Instance: bird_left:BIRD|Up_count:U6
- 24. Parameter Settings for User Entity Instance: player_object:PLAYER_INST
- 25. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:UX
- 26. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U3
- 27. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U4
- 28. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|Up_count:U_slow
- 29. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|scene_color:SCN
- 30. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U7
- 31. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U8
- 32. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U9
- 33. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U10
- 34. Parameter Settings for User Entity Instance: vga_adapter:VGA
- 35. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_address_translator:user_input_translator
- 36. Parameter Settings for User Entity Instance: vga_adapter:VGA|altsyncram:VideoMemory
- 37. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component
- 38. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller
- 39. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator
- 40. altsyncram Parameter Settings by Entity Instance
- 41. altpll Parameter Settings by Entity Instance
- 42. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U10"
- 43. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U9"
- 44. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U8"
- 45. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U7"
- 46. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U4"
- 47. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U3"
- 48. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:UX"
- 49. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U4"
- 50. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U3"
- 51. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U1"
- 52. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U2"
- 53. Port Connectivity Checks: "bird_left:BIRD"
- 54. Port Connectivity Checks: "game_over:GO"
- 55. Post-Synthesis Netlist Statistics for Top Partition
- 56. Elapsed Time Per Partition
- 57. Analysis & Synthesis Messages
- 58. Analysis & Synthesis Suppressed Messages
+ 19. Parameter Settings for User Entity Instance: bird_left:BIRD|scene_color:SCN
+ 20. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U2
+ 21. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U1
+ 22. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U3
+ 23. Parameter Settings for User Entity Instance: bird_left:BIRD|UpDn_count:U4
+ 24. Parameter Settings for User Entity Instance: bird_left:BIRD|Up_count:U6
+ 25. Parameter Settings for User Entity Instance: player_object:PLAYER_INST
+ 26. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:UX
+ 27. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U3
+ 28. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|UpDn_count:U4
+ 29. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|Up_count:U_slow
+ 30. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|scene_color:SCN
+ 31. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U7
+ 32. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U8
+ 33. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U9
+ 34. Parameter Settings for User Entity Instance: player_object:PLAYER_INST|regn:U10
+ 35. Parameter Settings for User Entity Instance: vga_adapter:VGA
+ 36. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_address_translator:user_input_translator
+ 37. Parameter Settings for User Entity Instance: vga_adapter:VGA|altsyncram:VideoMemory
+ 38. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component
+ 39. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller
+ 40. Parameter Settings for User Entity Instance: vga_adapter:VGA|vga_controller:controller|vga_address_translator:controller_translator
+ 41. altsyncram Parameter Settings by Entity Instance
+ 42. altpll Parameter Settings by Entity Instance
+ 43. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U10"
+ 44. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U9"
+ 45. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U8"
+ 46. Port Connectivity Checks: "player_object:PLAYER_INST|regn:U7"
+ 47. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U4"
+ 48. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:U3"
+ 49. Port Connectivity Checks: "player_object:PLAYER_INST|UpDn_count:UX"
+ 50. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U4"
+ 51. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U3"
+ 52. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U1"
+ 53. Port Connectivity Checks: "bird_left:BIRD|UpDn_count:U2"
+ 54. Port Connectivity Checks: "bird_left:BIRD"
+ 55. Port Connectivity Checks: "game_over:GO"
+ 56. Post-Synthesis Netlist Statistics for Top Partition
+ 57. Elapsed Time Per Partition
+ 58. Analysis & Synthesis Messages
+ 59. Analysis & Synthesis Suppressed Messages
 
 
 
@@ -90,7 +91,7 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +---------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Tue Nov 24 14:25:32 2026          ;
+; Analysis & Synthesis Status     ; Successful - Tue Nov 24 14:48:21 2026          ;
 ; Quartus Prime Version           ; 23.1std.0 Build 991 11/28/2023 SC Lite Edition ;
 ; Revision Name                   ; platformer                                     ;
 ; Top-level Entity Name           ; platformer                                     ;
@@ -251,14 +252,14 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------+----------------+
 ; Resource                                    ; Usage          ;
 +---------------------------------------------+----------------+
-; Estimate of Logic utilization (ALMs needed) ; 332            ;
+; Estimate of Logic utilization (ALMs needed) ; 341            ;
 ;                                             ;                ;
-; Combinational ALUT usage for logic          ; 545            ;
-;     -- 7 input functions                    ; 7              ;
-;     -- 6 input functions                    ; 109            ;
-;     -- 5 input functions                    ; 87             ;
-;     -- 4 input functions                    ; 58             ;
-;     -- <=3 input functions                  ; 284            ;
+; Combinational ALUT usage for logic          ; 556            ;
+;     -- 7 input functions                    ; 9              ;
+;     -- 6 input functions                    ; 114            ;
+;     -- 5 input functions                    ; 89             ;
+;     -- 4 input functions                    ; 61             ;
+;     -- <=3 input functions                  ; 283            ;
 ;                                             ;                ;
 ; Dedicated logic registers                   ; 205            ;
 ;                                             ;                ;
@@ -273,8 +274,8 @@ https://fpgasoftware.intel.com/eula.
 ;                                             ;                ;
 ; Maximum fan-out node                        ; CLOCK_50~input ;
 ; Maximum fan-out                             ; 185            ;
-; Total fan-out                               ; 3050           ;
-; Average fan-out                             ; 3.51           ;
+; Total fan-out                               ; 3112           ;
+; Average fan-out                             ; 3.54           ;
 +---------------------------------------------+----------------+
 
 
@@ -283,14 +284,15 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+------------------------+--------------+
 ; Compilation Hierarchy Node                              ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                        ; Entity Name            ; Library Name ;
 +---------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+------------------------------------------------------------------------------------------------------------+------------------------+--------------+
-; |platformer                                             ; 545 (35)            ; 205 (8)                   ; 57600             ; 0          ; 54   ; 0            ; |platformer                                                                                                ; platformer             ; work         ;
-;    |bird_left:BIRD|                                     ; 106 (47)            ; 57 (14)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD                                                                                 ; bird_left              ; work         ;
+; |platformer                                             ; 556 (41)            ; 205 (8)                   ; 57600             ; 0          ; 54   ; 0            ; |platformer                                                                                                ; platformer             ; work         ;
+;    |bird_left:BIRD|                                     ; 111 (47)            ; 57 (14)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD                                                                                 ; bird_left              ; work         ;
 ;       |UpDn_count:U1|                                   ; 1 (1)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U1                                                                   ; UpDn_count             ; work         ;
 ;       |UpDn_count:U2|                                   ; 17 (17)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U2                                                                   ; UpDn_count             ; work         ;
 ;       |UpDn_count:U3|                                   ; 10 (10)             ; 8 (8)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U3                                                                   ; UpDn_count             ; work         ;
 ;       |UpDn_count:U4|                                   ; 12 (12)             ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|UpDn_count:U4                                                                   ; UpDn_count             ; work         ;
 ;       |Up_count:U6|                                     ; 19 (19)             ; 19 (19)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|Up_count:U6                                                                     ; Up_count               ; work         ;
-;    |game_over:GO|                                       ; 59 (59)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|game_over:GO                                                                                   ; game_over              ; work         ;
+;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|bird_left:BIRD|scene_color:SCN                                                                 ; scene_color            ; work         ;
+;    |game_over:GO|                                       ; 58 (58)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|game_over:GO                                                                                   ; game_over              ; work         ;
 ;    |player_object:PLAYER_INST|                          ; 246 (185)           ; 78 (23)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST                                                                      ; player_object          ; work         ;
 ;       |UpDn_count:U3|                                   ; 6 (6)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U3                                                        ; UpDn_count             ; work         ;
 ;       |UpDn_count:U4|                                   ; 6 (6)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|UpDn_count:U4                                                        ; UpDn_count             ; work         ;
@@ -301,8 +303,8 @@ https://fpgasoftware.intel.com/eula.
 ;       |regn:U8|                                         ; 0 (0)               ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U8                                                              ; regn                   ; work         ;
 ;       |regn:U9|                                         ; 0 (0)               ; 1 (1)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|regn:U9                                                              ; regn                   ; work         ;
 ;       |scene_color:SCN|                                 ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|player_object:PLAYER_INST|scene_color:SCN                                                      ; scene_color            ; work         ;
-;    |scene_draw:SCENE|                                   ; 28 (24)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE                                                                               ; scene_draw             ; work         ;
-;       |scene_color:SC|                                  ; 4 (4)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE|scene_color:SC                                                                ; scene_color            ; work         ;
+;    |scene_draw:SCENE|                                   ; 29 (24)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE                                                                               ; scene_draw             ; work         ;
+;       |scene_color:SC|                                  ; 5 (5)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |platformer|scene_draw:SCENE|scene_color:SC                                                                ; scene_color            ; work         ;
 ;    |vga_adapter:VGA|                                    ; 71 (2)              ; 30 (0)                    ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA                                                                                ; vga_adapter            ; work         ;
 ;       |altsyncram:VideoMemory|                          ; 6 (0)               ; 4 (0)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory                                                         ; altsyncram             ; work         ;
 ;          |altsyncram_16n1:auto_generated|               ; 6 (0)               ; 4 (4)                     ; 57600             ; 0          ; 0    ; 0            ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated                          ; altsyncram_16n1        ; work         ;
@@ -417,13 +419,13 @@ Encoding Type:  One-Hot
 ; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U3|Q[5]                                                                 ;
 ; 4:1                ; 7 bits    ; 14 LEs        ; 14 LEs               ; 0 LEs                  ; Yes        ; |platformer|bird_left:BIRD|UpDn_count:U4|Q[4]                                                                 ;
 ; 4:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |platformer|game_over:GO|x[0]                                                                                 ;
-; 5:1                ; 7 bits    ; 21 LEs        ; 14 LEs               ; 7 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|vy[2]                                                                   ;
+; 5:1                ; 7 bits    ; 21 LEs        ; 14 LEs               ; 7 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|vy[1]                                                                   ;
 ; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[3]                                                                    ;
 ; 6:1                ; 2 bits    ; 8 LEs         ; 6 LEs                ; 2 LEs                  ; Yes        ; |platformer|player_object:PLAYER_INST|Y[5]                                                                    ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |platformer|bird_left:BIRD|y_Q                                                                                ;
 ; 3:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |platformer|vga_adapter:VGA|altsyncram:VideoMemory|altsyncram_16n1:auto_generated|mux_ifb:mux3|result_node[1] ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |platformer|player_object:PLAYER_INST|land_row                                                                ;
-; 4:1                ; 17 bits   ; 34 LEs        ; 34 LEs               ; 0 LEs                  ; No         ; |platformer|adp_y[2]                                                                                          ;
+; 4:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; No         ; |platformer|adp_y[2]                                                                                          ;
 ; 4:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |platformer|player_object:PLAYER_INST|vy_n                                                                    ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------------------------------------------------------------------------------+
 
@@ -492,36 +494,62 @@ Note: In order to hide this table in the UI and the text report file, please set
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
-+-------------------------------------------------------------+
-; Parameter Settings for User Entity Instance: bird_left:BIRD ;
-+----------------+---------+----------------------------------+
-; Parameter Name ; Value   ; Type                             ;
-+----------------+---------+----------------------------------+
-; RESOLUTION     ; 160x120 ; String                           ;
-; nX             ; 8       ; Signed Integer                   ;
-; nY             ; 7       ; Signed Integer                   ;
-; COLOR_DEPTH    ; 3       ; Signed Integer                   ;
-; XSCREEN        ; 160     ; Signed Integer                   ;
-; YSCREEN        ; 120     ; Signed Integer                   ;
-; XDIM           ; 11      ; Signed Integer                   ;
-; YDIM           ; 7       ; Signed Integer                   ;
-; sky_color      ; 001     ; Unsigned Binary                  ;
-; KK             ; 19      ; Signed Integer                   ;
-; A              ; 0000    ; Unsigned Binary                  ;
-; B              ; 0001    ; Unsigned Binary                  ;
-; C              ; 0010    ; Unsigned Binary                  ;
-; D              ; 0011    ; Unsigned Binary                  ;
-; E              ; 0100    ; Unsigned Binary                  ;
-; F              ; 0101    ; Unsigned Binary                  ;
-; G              ; 0110    ; Unsigned Binary                  ;
-; H              ; 0111    ; Unsigned Binary                  ;
-; I              ; 1000    ; Unsigned Binary                  ;
-; J              ; 1001    ; Unsigned Binary                  ;
-; K              ; 1010    ; Unsigned Binary                  ;
-; L              ; 1011    ; Unsigned Binary                  ;
-; M              ; 1100    ; Unsigned Binary                  ;
-; N              ; 1101    ; Unsigned Binary                  ;
-+----------------+---------+----------------------------------+
++-----------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: bird_left:BIRD                 ;
++----------------+------------------------------------------+-----------------+
+; Parameter Name ; Value                                    ; Type            ;
++----------------+------------------------------------------+-----------------+
+; RESOLUTION     ; 160x120                                  ; String          ;
+; nX             ; 8                                        ; Signed Integer  ;
+; nY             ; 7                                        ; Signed Integer  ;
+; COLOR_DEPTH    ; 3                                        ; Signed Integer  ;
+; XSCREEN        ; 160                                      ; Signed Integer  ;
+; YSCREEN        ; 120                                      ; Signed Integer  ;
+; XDIM           ; 11                                       ; Signed Integer  ;
+; YDIM           ; 7                                        ; Signed Integer  ;
+; sky_color      ; 001                                      ; Unsigned Binary ;
+; KK             ; 19                                       ; Signed Integer  ;
+; GROUND_Y       ; 112                                      ; Signed Integer  ;
+; GROUND_COLOR   ; 110                                      ; Unsigned Binary ;
+; PLAT_COLOR     ; 011                                      ; Unsigned Binary ;
+; NPLAT          ; 5                                        ; Signed Integer  ;
+; PLAT_H         ; 3                                        ; Signed Integer  ;
+; PLAT_X0        ; 0110010001000110001010000000101000000000 ; Unsigned Binary ;
+; PLAT_X1        ; 1000110001101110010100000011001010011111 ; Unsigned Binary ;
+; PLAT_Y         ; 0011000001000000010100000110000001110000 ; Unsigned Binary ;
+; A              ; 0000                                     ; Unsigned Binary ;
+; B              ; 0001                                     ; Unsigned Binary ;
+; C              ; 0010                                     ; Unsigned Binary ;
+; D              ; 0011                                     ; Unsigned Binary ;
+; E              ; 0100                                     ; Unsigned Binary ;
+; F              ; 0101                                     ; Unsigned Binary ;
+; G              ; 0110                                     ; Unsigned Binary ;
+; H              ; 0111                                     ; Unsigned Binary ;
+; I              ; 1000                                     ; Unsigned Binary ;
+; J              ; 1001                                     ; Unsigned Binary ;
+; K              ; 1010                                     ; Unsigned Binary ;
+; L              ; 1011                                     ; Unsigned Binary ;
+; M              ; 1100                                     ; Unsigned Binary ;
+; N              ; 1101                                     ; Unsigned Binary ;
++----------------+------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: bird_left:BIRD|scene_color:SCN ;
++----------------+------------------------------------------+-----------------+
+; Parameter Name ; Value                                    ; Type            ;
++----------------+------------------------------------------+-----------------+
+; GROUND_Y       ; 112                                      ; Signed Integer  ;
+; BG_COLOR       ; 001                                      ; Unsigned Binary ;
+; GROUND_COLOR   ; 110                                      ; Unsigned Binary ;
+; PLAT_COLOR     ; 011                                      ; Unsigned Binary ;
+; NPLAT          ; 5                                        ; Signed Integer  ;
+; PLAT_H         ; 3                                        ; Signed Integer  ;
+; PLAT_X0        ; 0110010001000110001010000000101000000000 ; Unsigned Binary ;
+; PLAT_X1        ; 1000110001101110010100000011001010011111 ; Unsigned Binary ;
+; PLAT_Y         ; 0011000001000000010100000110000001110000 ; Unsigned Binary ;
++----------------+------------------------------------------+-----------------+
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
@@ -1402,7 +1430,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 ;     ENA SCLR          ; 61                          ;
 ;     SCLR              ; 57                          ;
 ;     plain             ; 45                          ;
-; arriav_lcell_comb     ; 546                         ;
+; arriav_lcell_comb     ; 557                         ;
 ;     arith             ; 201                         ;
 ;         0 data inputs ; 3                           ;
 ;         1 data inputs ; 144                         ;
@@ -1410,16 +1438,16 @@ Note: In order to hide this table in the UI and the text report file, please set
 ;         3 data inputs ; 3                           ;
 ;         4 data inputs ; 5                           ;
 ;         5 data inputs ; 7                           ;
-;     extend            ; 7                           ;
-;         7 data inputs ; 7                           ;
-;     normal            ; 328                         ;
+;     extend            ; 9                           ;
+;         7 data inputs ; 9                           ;
+;     normal            ; 337                         ;
 ;         0 data inputs ; 1                           ;
 ;         1 data inputs ; 1                           ;
-;         2 data inputs ; 37                          ;
-;         3 data inputs ; 47                          ;
-;         4 data inputs ; 53                          ;
-;         5 data inputs ; 80                          ;
-;         6 data inputs ; 109                         ;
+;         2 data inputs ; 38                          ;
+;         3 data inputs ; 45                          ;
+;         4 data inputs ; 56                          ;
+;         5 data inputs ; 82                          ;
+;         6 data inputs ; 114                         ;
 ;     shared            ; 10                          ;
 ;         0 data inputs ; 1                           ;
 ;         1 data inputs ; 2                           ;
@@ -1430,7 +1458,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; stratixv_ram_block    ; 9                           ;
 ;                       ;                             ;
 ; Max LUT depth         ; 11.60                       ;
-; Average LUT depth     ; 4.52                        ;
+; Average LUT depth     ; 4.58                        ;
 +-----------------------+-----------------------------+
 
 
@@ -1449,7 +1477,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 23.1std.0 Build 991 11/28/2023 SC Lite Edition
-    Info: Processing started: Tue Nov 24 14:25:24 2026
+    Info: Processing started: Tue Nov 24 14:48:12 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off platformer -c platformer
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 6 of the 6 processors detected
@@ -1463,43 +1491,43 @@ Info (12021): Found 1 design units, including 1 entities, in source file vga_ada
     Info (12023): Found entity 1: vga_adapter File: C:/intelFPGA/platformer/vga_adapter.v Line: 42
 Info (12021): Found 10 design units, including 10 entities, in source file platformer.v
     Info (12023): Found entity 1: platformer File: C:/intelFPGA/platformer/platformer.v Line: 3
-    Info (12023): Found entity 2: scene_color File: C:/intelFPGA/platformer/platformer.v Line: 172
-    Info (12023): Found entity 3: scene_draw File: C:/intelFPGA/platformer/platformer.v Line: 205
-    Info (12023): Found entity 4: game_over File: C:/intelFPGA/platformer/platformer.v Line: 253
-    Info (12023): Found entity 5: bird_left File: C:/intelFPGA/platformer/platformer.v Line: 334
-    Info (12023): Found entity 6: UpDn_count File: C:/intelFPGA/platformer/platformer.v Line: 535
-    Info (12023): Found entity 7: Up_count File: C:/intelFPGA/platformer/platformer.v Line: 554
-    Info (12023): Found entity 8: bird_right File: C:/intelFPGA/platformer/platformer.v Line: 569
-    Info (12023): Found entity 9: player_object File: C:/intelFPGA/platformer/platformer.v Line: 770
-    Info (12023): Found entity 10: regn File: C:/intelFPGA/platformer/platformer.v Line: 1067
+    Info (12023): Found entity 2: scene_color File: C:/intelFPGA/platformer/platformer.v Line: 175
+    Info (12023): Found entity 3: scene_draw File: C:/intelFPGA/platformer/platformer.v Line: 208
+    Info (12023): Found entity 4: game_over File: C:/intelFPGA/platformer/platformer.v Line: 256
+    Info (12023): Found entity 5: bird_left File: C:/intelFPGA/platformer/platformer.v Line: 337
+    Info (12023): Found entity 6: UpDn_count File: C:/intelFPGA/platformer/platformer.v Line: 556
+    Info (12023): Found entity 7: Up_count File: C:/intelFPGA/platformer/platformer.v Line: 575
+    Info (12023): Found entity 8: bird_right File: C:/intelFPGA/platformer/platformer.v Line: 590
+    Info (12023): Found entity 9: player_object File: C:/intelFPGA/platformer/platformer.v Line: 810
+    Info (12023): Found entity 10: regn File: C:/intelFPGA/platformer/platformer.v Line: 1107
 Info (12127): Elaborating entity "platformer" for the top level hierarchy
 Warning (10230): Verilog HDL assignment warning at platformer.v(33): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 33
 Info (12128): Elaborating entity "scene_draw" for hierarchy "scene_draw:SCENE" File: C:/intelFPGA/platformer/platformer.v Line: 83
-Info (12128): Elaborating entity "scene_color" for hierarchy "scene_draw:SCENE|scene_color:SC" File: C:/intelFPGA/platformer/platformer.v Line: 248
+Info (12128): Elaborating entity "scene_color" for hierarchy "scene_draw:SCENE|scene_color:SC" File: C:/intelFPGA/platformer/platformer.v Line: 251
 Info (12128): Elaborating entity "game_over" for hierarchy "game_over:GO" File: C:/intelFPGA/platformer/platformer.v Line: 91
-Warning (10230): Verilog HDL assignment warning at platformer.v(279): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 279
-Warning (10230): Verilog HDL assignment warning at platformer.v(282): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 282
-Info (12128): Elaborating entity "bird_left" for hierarchy "bird_left:BIRD" File: C:/intelFPGA/platformer/platformer.v Line: 106
-Warning (10230): Verilog HDL assignment warning at platformer.v(409): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 409
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U2" File: C:/intelFPGA/platformer/platformer.v Line: 424
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U1" File: C:/intelFPGA/platformer/platformer.v Line: 428
-Info (12128): Elaborating entity "Up_count" for hierarchy "bird_left:BIRD|Up_count:U6" File: C:/intelFPGA/platformer/platformer.v Line: 439
-Info (12128): Elaborating entity "player_object" for hierarchy "player_object:PLAYER_INST" File: C:/intelFPGA/platformer/platformer.v Line: 130
-Warning (10230): Verilog HDL assignment warning at platformer.v(821): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 821
-Warning (10230): Verilog HDL assignment warning at platformer.v(875): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 875
-Warning (10230): Verilog HDL assignment warning at platformer.v(877): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 877
-Warning (10230): Verilog HDL assignment warning at platformer.v(878): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 878
-Warning (10230): Verilog HDL assignment warning at platformer.v(906): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 906
-Warning (10230): Verilog HDL assignment warning at platformer.v(914): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 914
-Warning (10230): Verilog HDL assignment warning at platformer.v(1043): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 1043
-Warning (10230): Verilog HDL assignment warning at platformer.v(1044): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1044
-Info (12128): Elaborating entity "UpDn_count" for hierarchy "player_object:PLAYER_INST|UpDn_count:U3" File: C:/intelFPGA/platformer/platformer.v Line: 934
-Info (12128): Elaborating entity "Up_count" for hierarchy "player_object:PLAYER_INST|Up_count:U_slow" File: C:/intelFPGA/platformer/platformer.v Line: 940
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U7" File: C:/intelFPGA/platformer/platformer.v Line: 1053
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U8" File: C:/intelFPGA/platformer/platformer.v Line: 1055
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U9" File: C:/intelFPGA/platformer/platformer.v Line: 1058
-Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U10" File: C:/intelFPGA/platformer/platformer.v Line: 1062
-Info (12128): Elaborating entity "vga_adapter" for hierarchy "vga_adapter:VGA" File: C:/intelFPGA/platformer/platformer.v Line: 164
+Warning (10230): Verilog HDL assignment warning at platformer.v(282): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 282
+Warning (10230): Verilog HDL assignment warning at platformer.v(285): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 285
+Info (12128): Elaborating entity "bird_left" for hierarchy "bird_left:BIRD" File: C:/intelFPGA/platformer/platformer.v Line: 109
+Warning (10230): Verilog HDL assignment warning at platformer.v(422): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 422
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U2" File: C:/intelFPGA/platformer/platformer.v Line: 445
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "bird_left:BIRD|UpDn_count:U1" File: C:/intelFPGA/platformer/platformer.v Line: 449
+Info (12128): Elaborating entity "Up_count" for hierarchy "bird_left:BIRD|Up_count:U6" File: C:/intelFPGA/platformer/platformer.v Line: 460
+Info (12128): Elaborating entity "player_object" for hierarchy "player_object:PLAYER_INST" File: C:/intelFPGA/platformer/platformer.v Line: 133
+Warning (10230): Verilog HDL assignment warning at platformer.v(861): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 861
+Warning (10230): Verilog HDL assignment warning at platformer.v(915): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 915
+Warning (10230): Verilog HDL assignment warning at platformer.v(917): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 917
+Warning (10230): Verilog HDL assignment warning at platformer.v(918): truncated value with size 32 to match size of target (5) File: C:/intelFPGA/platformer/platformer.v Line: 918
+Warning (10230): Verilog HDL assignment warning at platformer.v(946): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 946
+Warning (10230): Verilog HDL assignment warning at platformer.v(954): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 954
+Warning (10230): Verilog HDL assignment warning at platformer.v(1083): truncated value with size 32 to match size of target (8) File: C:/intelFPGA/platformer/platformer.v Line: 1083
+Warning (10230): Verilog HDL assignment warning at platformer.v(1084): truncated value with size 32 to match size of target (7) File: C:/intelFPGA/platformer/platformer.v Line: 1084
+Info (12128): Elaborating entity "UpDn_count" for hierarchy "player_object:PLAYER_INST|UpDn_count:U3" File: C:/intelFPGA/platformer/platformer.v Line: 974
+Info (12128): Elaborating entity "Up_count" for hierarchy "player_object:PLAYER_INST|Up_count:U_slow" File: C:/intelFPGA/platformer/platformer.v Line: 980
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U7" File: C:/intelFPGA/platformer/platformer.v Line: 1093
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U8" File: C:/intelFPGA/platformer/platformer.v Line: 1095
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U9" File: C:/intelFPGA/platformer/platformer.v Line: 1098
+Info (12128): Elaborating entity "regn" for hierarchy "player_object:PLAYER_INST|regn:U10" File: C:/intelFPGA/platformer/platformer.v Line: 1102
+Info (12128): Elaborating entity "vga_adapter" for hierarchy "vga_adapter:VGA" File: C:/intelFPGA/platformer/platformer.v Line: 167
 Info (12128): Elaborating entity "vga_address_translator" for hierarchy "vga_adapter:VGA|vga_address_translator:user_input_translator" File: C:/intelFPGA/platformer/vga_adapter.v Line: 128
 Info (12128): Elaborating entity "altsyncram" for hierarchy "vga_adapter:VGA|altsyncram:VideoMemory" File: C:/intelFPGA/platformer/vga_adapter.v Line: 151
 Info (12130): Elaborated megafunction instantiation "vga_adapter:VGA|altsyncram:VideoMemory" File: C:/intelFPGA/platformer/vga_adapter.v Line: 151
@@ -1560,16 +1588,16 @@ Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 5 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
 Warning: RST port on the PLL is not properly connected on instance vga_adapter:VGA|vga_pll:mypll|altpll:altpll_component|altpll_80u:auto_generated|generic_pll1. The reset port on the PLL should be connected. If the PLL loses lock for any reason, you might need to manually reset the PLL in order to re-establish lock to the reference clock. File: C:/intelFPGA/platformer/db/altpll_80u.tdf Line: 34
     Info: Must be connected
-Info (21057): Implemented 641 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 652 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 15 input pins
     Info (21059): Implemented 39 output pins
-    Info (21061): Implemented 577 logic cells
+    Info (21061): Implemented 588 logic cells
     Info (21064): Implemented 9 RAM segments
     Info (21065): Implemented 1 PLLs
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 17 warnings
     Info: Peak virtual memory: 4890 megabytes
-    Info: Processing ended: Tue Nov 24 14:25:32 2026
-    Info: Elapsed time: 00:00:08
+    Info: Processing ended: Tue Nov 24 14:48:21 2026
+    Info: Elapsed time: 00:00:09
     Info: Total CPU time (on all processors): 00:00:17
 
 

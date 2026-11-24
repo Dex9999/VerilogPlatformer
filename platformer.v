@@ -101,10 +101,13 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
 
     wire bird_resetn = Resetn & sw_bird & ~sw_over & sc_done & ~mode_chg;
 
-    bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR)) BIRD (
+    bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR), .GROUND_Y(GROUND_Y),
+                .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
+                .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) BIRD (
         bird_resetn, CLOCK_50, 1'b1, bird_req, bird_x, bird_y, bird_color, bird_write,
         1'b1, bird_done, bird_busy, BIRD_Y, bird_obj_x, bird_obj_y);
-
+		  
     wire [7:0] player_x;
     wire [6:0] player_y;
     wire [2:0] player_color;
@@ -342,7 +345,17 @@ module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, s
     parameter XDIM = 11, YDIM = 7; // object's width and height
     parameter sky_color = 3'b001; 
     parameter KK = 24; // controls animation speed (use 16 for DESim, 5 for ModelSim)
-
+	 
+	 // scene info (for erasing properly)
+    parameter GROUND_Y     = 112;
+    parameter GROUND_COLOR = 3'b110;
+    parameter PLAT_COLOR   = 3'b011;
+    parameter NPLAT  = 5;
+    parameter PLAT_H = 3;
+    parameter [NPLAT*8-1:0] PLAT_X0 = 0;
+    parameter [NPLAT*8-1:0] PLAT_X1 = 0;
+    parameter [NPLAT*8-1:0] PLAT_Y  = 0;
+	 
     // state codes
     parameter A = 4'b0000,
               B = 4'b0001,
@@ -414,10 +427,18 @@ module bird_left (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, s
     assign obj_y = Y;
 
 
-    assign VGA_x = X + XC;                          // pixel x coordinate
-    assign VGA_y = Y + YC;                          // pixel y coordinate
-    assign VGA_color = erase == 0 ? px_color : sky_color;    // pixel color to draw/erase
-    assign VGA_write = write;                       // pixel write control
+    wire [7:0] px = X + XC;                         // pixel x coordinate
+    wire [6:0] py = Y + YC;                         // pixel y coordinate
+    assign VGA_x = px;
+    assign VGA_y = py;
+
+    // find what's below this pixel (ground/sky/platform)
+    wire [2:0] scene_px;
+    scene_color #(.GROUND_Y(GROUND_Y), .BG_COLOR(sky_color), .GROUND_COLOR(GROUND_COLOR),
+                  .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                  .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCN (px, py, scene_px);
+	 assign VGA_color = erase ? scene_px : px_color;
+	 assign VGA_write = write;                       // pixel write control
 
 
         // X moves left: enable = Ex, direction 0 = count down
@@ -577,7 +598,17 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
     parameter XDIM = 11, YDIM = 7; // object's width and height
     parameter sky_color = 3'b001; 
     parameter KK = 24; // controls animation speed (use 16 for DESim, 5 for ModelSim)
-
+	
+	 // scene info (for erasing properly)
+    parameter GROUND_Y     = 112;
+    parameter GROUND_COLOR = 3'b110;
+    parameter PLAT_COLOR   = 3'b011;
+    parameter NPLAT  = 5;
+    parameter PLAT_H = 3;
+    parameter [NPLAT*8-1:0] PLAT_X0 = 0;
+    parameter [NPLAT*8-1:0] PLAT_X1 = 0;
+    parameter [NPLAT*8-1:0] PLAT_Y  = 0;
+	 
     // state codes
     parameter A = 4'b0000,
               B = 4'b0001,
@@ -649,10 +680,19 @@ module bird_right (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, 
     assign obj_y = Y;
 
 
-    assign VGA_x = X + XC;                          // pixel x coordinate
-    assign VGA_y = Y + YC;                          // pixel y coordinate
-    assign VGA_color = erase == 0 ? px_color : sky_color;    // pixel color to draw/erase
-    assign VGA_write = write;                       // pixel write control
+    wire [7:0] px = X + XC;                         // pixel x coordinate
+    wire [6:0] py = Y + YC;                         // pixel y coordinate
+    assign VGA_x = px;
+    assign VGA_y = py;
+
+    // find what's below this pixel (ground/sky/platform)
+    wire [2:0] scene_px;
+    scene_color #(.GROUND_Y(GROUND_Y), .BG_COLOR(sky_color), .GROUND_COLOR(GROUND_COLOR),
+                  .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                  .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCN (px, py, scene_px);
+
+    assign VGA_color = erase == 0 ? px_color : scene_px;    // pixel color to draw/erase
+	 assign VGA_write = write;                       // pixel write control
 
 
         // X moves right: enable = Ex, direction 1 = count up
