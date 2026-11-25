@@ -1536,3 +1536,768 @@ module Up_count (Clock, Resetn, Q);
         else 
             Q <= Q + 1'b1;
 endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, PS2_CLK, PS2_DAT);
+
+    parameter RESOLUTION = "160x120"; // "640x480" "320x240" "160x120"
+    parameter COLOR_DEPTH = 3;        // 9 6 3
+    parameter nX = 8;
+    parameter nY = 7;
+
+    //keyboard
+    inout wire PS2_CLK;
+    inout wire PS2_DAT;
+
+    // scene layout
+    parameter YSCREEN = 120;
+    parameter GROUND_HEIGHT = 8;
+    parameter BG_COLOR = 3'b001; // blue bg
+    parameter GROUND_COLOR = 3'b110;
+
+    parameter PLAT_COLOR = 3'b011;   // cyan (only used by scene_color for the ground "platform")
+
+    localparam GROUND_Y = YSCREEN - GROUND_HEIGHT;   // first ground row (112)
+    localparam PLAYER_Y = GROUND_Y - 1 - 6;          // sprite is 13 tall, centred on Y -> bottom row = Y + 6
+
+    localparam NPLAT = 1;
+    localparam PLAT_H = 3;
+    localparam [7:0] GROUND_Y8 = YSCREEN - GROUND_HEIGHT;
+    localparam [NPLAT*8-1:0] PLAT_X0 = 8'd0;
+    localparam [NPLAT*8-1:0] PLAT_X1 = 8'd159;
+    localparam [NPLAT*8-1:0] PLAT_Y  = GROUND_Y8;
+
+    // moving platforms
+    localparam NPL = 5;                          // how many moving platforms
+    parameter  PLAT_KK = 21;                     // platform & ground speed: smaller = faster
+    localparam PLAT_END = YSCREEN;               // platforms fall all the way off the bottom of the screen
+    // order they come down (X is the left edge, platforms are 20 wide):
+    //   MP0 left (10), MP1 right (130), MP2 middle (70), MP3 slightly left (40), MP4 slightly right (100)
+    // start rows are 22 apart so they stay evenly spaced while looping
+
+    // birds
+    parameter BIRD_KK = 19;                      // bird speed: smaller = faster
+    localparam [6:0] BIRD_L_Y = 7'd75;           // row the left bird flies on
+    localparam [6:0] BIRD_R_Y = 7'd45;           // row the right bird flies on
+
+    input wire [3:0] KEY;
+    input wire [9:0] SW;
+    output wire [9:0] LEDR;
+    input wire CLOCK_50;
+
+    output wire [7:0] VGA_R;
+    output wire [7:0] VGA_G;
+    output wire [7:0] VGA_B;
+    output wire VGA_HS;
+    output wire VGA_VS;
+    output wire VGA_BLANK_N;
+    output wire VGA_SYNC_N;
+    output wire VGA_CLK;
+
+    //player x,y to stop overwrites
+    wire [7:0] pl_x;
+    wire [6:0] pl_y;
+
+    // synchronize reset to stop random pixels bug
+    reg [1:0] rst_s;
+    always @(posedge CLOCK_50)
+        rst_s <= {rst_s[0], KEY[0]};
+
+    wire Resetn = rst_s[1];     // active low, now synchronous
+
+    //keyboard
+    wire [7:0] ps2_byte;       // last byte received
+    wire       ps2_byte_en;    // 1 clock pulse for every new byte
+
+    PS2_Controller PS2 (
+        .CLOCK_50(CLOCK_50),
+        .reset(~Resetn),
+        .the_command(8'h00),
+        .send_command(1'b0),
+        .PS2_CLK(PS2_CLK),
+        .PS2_DAT(PS2_DAT),
+        .command_was_sent(),
+        .error_communication_timed_out(),
+        .received_data(ps2_byte),
+        .received_data_en(ps2_byte_en));
+
+    wire kb_left, kb_right, kb_jump;
+
+    ps2_keys KEYS (
+        .clock(CLOCK_50),
+        .reset(~Resetn),
+        .received_data(ps2_byte),
+        .received_data_en(ps2_byte_en),
+        .left(kb_left),
+        .right(kb_right),
+        .jump(kb_jump));
+
+    // main game scene signals (declared early because the FSM uses sc_done)
+    wire [nX-1:0] sc_x;
+    wire [nY-1:0] sc_y;
+    wire [COLOR_DEPTH-1:0] sc_color;
+    wire sc_write, sc_done;
+
+    //main FSM
+
+    localparam [1:0] IDLE      = 2'd0,
+                     GAME_ON   = 2'd1,
+                     GAME_OVER = 2'd2;
+
+    wire player_fell;                      // driven in the collision section below
+    wire bird_hit;                         // driven in the collision section below
+    wire start       = ~KEY[2] | kb_jump;  // any jump key starts the game
+    wire death       = sc_done & (player_fell | bird_hit | SW[1]);  // SW[1] = fake death for testing
+
+    reg [1:0] y_Q, Y_D; // FSM for which screen we are on
+
+    always @ (*)
+        case (y_Q)
+            IDLE:  if (start) Y_D = GAME_ON; else Y_D = IDLE;   //idle
+
+            GAME_ON:  if (!death) Y_D = GAME_ON;
+                else Y_D = GAME_OVER;
+
+            GAME_OVER: Y_D = GAME_OVER;     // only the reset button leaves
+
+            default: Y_D = IDLE;
+        endcase
+
+    reg in_idle, in_play, in_over;
+    always @ (*)
+    begin
+        in_idle = 1'b0; in_play = 1'b0; in_over = 1'b0;
+
+        case (y_Q)
+            IDLE:      in_idle = 1'b1;
+            GAME_ON:   in_play = 1'b1;
+            GAME_OVER: in_over = 1'b1;
+        endcase
+    end
+
+    // FSM FFs
+    always @(posedge CLOCK_50)
+        if (Resetn == 0)
+            y_Q <= IDLE;
+        else
+            y_Q <= Y_D;
+
+    // resets: each module only runs in the play state, after the background is painted
+    wire scene_resetn    = Resetn & in_play;
+    wire bird_resetn     = Resetn & in_play & sc_done;
+    wire player_resetn   = Resetn & in_play & sc_done;
+    wire platform_resetn = Resetn & in_play & sc_done;
+    wire ground_resetn   = Resetn & in_play & sc_done;
+
+    // scene painter (sky + ground only)
+    scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR), .GROUND_COLOR(GROUND_COLOR),
+                 .PLAT_COLOR(PLAT_COLOR), .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                 .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) SCENE
+        (CLOCK_50, scene_resetn, sc_x, sc_y, sc_color, sc_write, sc_done);
+
+    // game over screen, runs only in GAME_OVER
+    wire [nX-1:0] go_x;
+    wire [nY-1:0] go_y;
+    wire [COLOR_DEPTH-1:0] go_color;
+    wire go_write, go_done;
+
+    game_over GO (CLOCK_50, Resetn, in_over, go_x, go_y, go_color, go_write, go_done);
+
+    //  bus arbiter: player, 2 birds, 5 platforms, ground 
+    // bit 0 = player, bit 1 = bird left, bit 2 = bird right, bits 3..7 = platforms 0-4, bit 8 = ground
+    wire player_req, bl_req, br_req, gr_req;
+    wire [NPL-1:0] mp_req;
+    wire [NPL+3:0] arb_req, arb_gnt;
+    assign arb_req = {gr_req, mp_req, br_req, bl_req, player_req};
+
+    wire player_gnt = arb_gnt[0];
+    wire bl_gnt     = arb_gnt[1];
+    wire br_gnt     = arb_gnt[2];
+    wire [NPL-1:0] mp_gnt = arb_gnt[NPL+2:3];
+    wire gr_gnt     = arb_gnt[NPL+3];
+
+    vga_arbiter #(.N(NPL+4)) ARB (CLOCK_50, Resetn, arb_req, arb_gnt);
+
+    // Bird LEFT (enters at the right edge, flies left)
+    wire [7:0] bl_x;
+    wire [6:0] bl_y;
+    wire [2:0] bl_color;
+    wire bl_write, bl_done, bl_busy, bl_start;
+    wire [nX-1:0] bl_obj_x;
+    wire [nY-1:0] bl_obj_y;
+
+    // pulse about every 10.7 s; first bird after ~5.4 s
+    spawn_timer #(.N(29), .INIT(29'h10000000)) BL_TIMER (CLOCK_50, bird_resetn, bl_busy, bl_start);
+
+    bird_left #(.KK(BIRD_KK), .sky_color(BG_COLOR), .GROUND_Y(GROUND_Y),
+                .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
+                .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) BIRD_L (
+        bird_resetn, CLOCK_50, bl_gnt, bl_req, bl_x, bl_y, bl_color, bl_write,
+        bl_start, bl_done, bl_busy, BIRD_L_Y, bl_obj_x, bl_obj_y, pl_x, pl_y);
+
+    //  Bird RIGHT (enters at the left edge, flies right) 
+    wire [7:0] br_x;
+    wire [6:0] br_y;
+    wire [2:0] br_color;
+    wire br_write, br_done, br_busy, br_start;
+    wire [nX-1:0] br_obj_x;
+    wire [nY-1:0] br_obj_y;
+
+    // pulse about every 10.7 s; first bird after ~10.7 s
+    spawn_timer #(.N(29), .INIT(29'h00000000)) BR_TIMER (CLOCK_50, bird_resetn, br_busy, br_start);
+
+    bird_right #(.KK(BIRD_KK), .sky_color(BG_COLOR), .GROUND_Y(GROUND_Y),
+                 .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
+                 .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                 .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) BIRD_R (
+        bird_resetn, CLOCK_50, br_gnt, br_req, br_x, br_y, br_color, br_write,
+        br_start, br_done, br_busy, BIRD_R_Y, br_obj_x, br_obj_y, pl_x, pl_y);
+
+    // 5 looping platforms 
+    wire [NPL*8-1:0] mp_x;
+    wire [NPL*7-1:0] mp_y;
+    wire [NPL*3-1:0] mp_color;
+    wire [NPL-1:0]   mp_write;
+    wire [NPL*8-1:0] mp_ox;   // each platform's left edge (for player_object later)
+    wire [NPL*7-1:0] mp_oy;   // each platform's top row (platform is 20 wide x 4 tall)
+
+    //  X position start row speed erase colour stop row
+    plat_loop #(.X_POS(8'd10),  .Y_INIT(7'd88), .KK(PLAT_KK), .sky_color(BG_COLOR), .Y_END(PLAT_END)) MP0
+        (platform_resetn, CLOCK_50, mp_gnt[0], mp_req[0], mp_x[7:0],   mp_y[6:0],   mp_color[2:0],   mp_write[0], pl_x, pl_y, mp_ox[7:0],   mp_oy[6:0]);
+    plat_loop #(.X_POS(8'd130), .Y_INIT(7'd66), .KK(PLAT_KK), .sky_color(BG_COLOR), .Y_END(PLAT_END)) MP1
+        (platform_resetn, CLOCK_50, mp_gnt[1], mp_req[1], mp_x[15:8],  mp_y[13:7],  mp_color[5:3],   mp_write[1], pl_x, pl_y, mp_ox[15:8],  mp_oy[13:7]);
+    plat_loop #(.X_POS(8'd70),  .Y_INIT(7'd44), .KK(PLAT_KK), .sky_color(BG_COLOR), .Y_END(PLAT_END)) MP2
+        (platform_resetn, CLOCK_50, mp_gnt[2], mp_req[2], mp_x[23:16], mp_y[20:14], mp_color[8:6],   mp_write[2], pl_x, pl_y, mp_ox[23:16], mp_oy[20:14]);
+    plat_loop #(.X_POS(8'd40),  .Y_INIT(7'd22), .KK(PLAT_KK), .sky_color(BG_COLOR), .Y_END(PLAT_END)) MP3
+        (platform_resetn, CLOCK_50, mp_gnt[3], mp_req[3], mp_x[31:24], mp_y[27:21], mp_color[11:9],  mp_write[3], pl_x, pl_y, mp_ox[31:24], mp_oy[27:21]);
+    plat_loop #(.X_POS(8'd100), .Y_INIT(7'd0),  .KK(PLAT_KK), .sky_color(BG_COLOR), .Y_END(PLAT_END)) MP4
+        (platform_resetn, CLOCK_50, mp_gnt[4], mp_req[4], mp_x[39:32], mp_y[34:28], mp_color[14:12], mp_write[4], pl_x, pl_y, mp_ox[39:32], mp_oy[34:28]);
+
+    // falling ground 
+    // scene_draw paints the ground once: module erases it row by row, same speed as platforms
+    wire [7:0] gr_x;
+    wire [6:0] gr_y;
+    wire [2:0] gr_color;
+    wire gr_write, gr_done;
+    wire [6:0] gr_obj_y;     // current top row of the ground (for player_object later)
+
+    ground_fall #(.KK(PLAT_KK), .Y_START(GROUND_Y), .YSCREEN(YSCREEN), .sky_color(BG_COLOR)) GROUND
+        (ground_resetn, CLOCK_50, gr_gnt, gr_req, gr_x, gr_y, gr_color, gr_write, gr_done, gr_obj_y, pl_x, pl_y);
+
+    // player
+    wire [7:0] player_x;
+    wire [6:0] player_y;
+    wire [2:0] player_color;
+    wire player_write;
+
+    // KEY[1] = right, KEY[3] = left, KEY[2] = jump, SW[2] = yell
+    player_object #(.YOFFSET(PLAYER_Y), .BG_COLOR(BG_COLOR), .GROUND_Y(GROUND_Y),
+                    .GROUND_COLOR(GROUND_COLOR), .PLAT_COLOR(PLAT_COLOR),
+                    .NPLAT(NPLAT), .PLAT_H(PLAT_H),
+                    .PLAT_X0(PLAT_X0), .PLAT_X1(PLAT_X1), .PLAT_Y(PLAT_Y)) PLAYER_INST (
+        .Resetn(player_resetn),
+        .Clock(CLOCK_50),
+        .key_right(~KEY[1] | kb_right),
+        .key_left(~KEY[3] | kb_left),
+        .yell_pressed(SW[2]), // temp until mic input
+        .jump_pressed(~KEY[2] | kb_jump),
+        .gnt(player_gnt),
+        .req(player_req),
+        .VGA_x(player_x),
+        .VGA_y(player_y),
+        .VGA_color(player_color),
+        .VGA_write(player_write),
+        .obj_x(pl_x),
+        .obj_y(pl_y)
+    );
+
+    // collision + death
+    // Bird sprite is 11 wide x 7 tall, obj_x/obj_y is its top-left corner.
+    // Hitbox = sprite shrunk HB_IN pixels on every side (columns +2..+8, rows +2..+4).
+    // Player box = pl_x-5..pl_x+5, pl_y-6..pl_y+6.
+    // Two ranges overlap when each starts before the other ends. Subtractions are
+    // moved to the other side as additions so nothing goes negative.
+    localparam BIRD_W = 11;
+    localparam BIRD_H = 7;
+    localparam HB_IN  = 2;
+
+    wire [8:0] plx = {1'b0, pl_x};
+    wire [8:0] ply = {2'b00, pl_y};
+    wire [8:0] blx = {1'b0, bl_obj_x};
+    wire [8:0] bly = {2'b00, bl_obj_y};
+    wire [8:0] brx = {1'b0, br_obj_x};
+    wire [8:0] bry = {2'b00, br_obj_y};
+
+    // only count a bird while it is flying (an idle bird keeps its last position)
+    wire hit_bl = bl_busy &&
+        (plx + 5 >= blx + HB_IN) && (plx <= blx + (BIRD_W-1-HB_IN) + 5) &&
+        (ply + 6 >= bly + HB_IN) && (ply <= bly + (BIRD_H-1-HB_IN) + 6);
+
+    wire hit_br = br_busy &&
+        (plx + 5 >= brx + HB_IN) && (plx <= brx + (BIRD_W-1-HB_IN) + 5) &&
+        (ply + 6 >= bry + HB_IN) && (ply <= bry + (BIRD_H-1-HB_IN) + 6);
+
+    assign bird_hit = hit_bl | hit_br;
+
+    // dies when the bottom row of the player (pl_y + 6) reaches the last screen row (119)
+    wire [7:0] pl_bottom = {1'b0, pl_y} + 8'd6;
+    assign player_fell = (pl_bottom >= YSCREEN - 1);
+
+    assign LEDR = SW;
+
+    // pick the drawing module that owns the bus 
+    // The arbiter grant is one-hot, so AND each source with its grant and OR them together.
+    reg [7:0] arb_x;
+    reg [6:0] arb_y;
+    reg [2:0] arb_color;
+    reg       arb_write;
+    integer k;
+    always @(*) begin
+        arb_x     = ({8{player_gnt}} & player_x)     | ({8{bl_gnt}} & bl_x)     | ({8{br_gnt}} & br_x);
+        arb_y     = ({7{player_gnt}} & player_y)     | ({7{bl_gnt}} & bl_y)     | ({7{br_gnt}} & br_y);
+        arb_color = ({3{player_gnt}} & player_color) | ({3{bl_gnt}} & bl_color) | ({3{br_gnt}} & br_color);
+        arb_write = (player_gnt & player_write)      | (bl_gnt & bl_write)      | (br_gnt & br_write);
+        for (k = 0; k < NPL; k = k + 1) begin
+            arb_x     = arb_x     | ({8{mp_gnt[k]}} & mp_x[k*8 +: 8]);
+            arb_y     = arb_y     | ({7{mp_gnt[k]}} & mp_y[k*7 +: 7]);
+            arb_color = arb_color | ({3{mp_gnt[k]}} & mp_color[k*3 +: 3]);
+            arb_write = arb_write | (mp_gnt[k] & mp_write[k]);
+        end
+        // ground
+        arb_x     = arb_x     | ({8{gr_gnt}} & gr_x);
+        arb_y     = arb_y     | ({7{gr_gnt}} & gr_y);
+        arb_color = arb_color | ({3{gr_gnt}} & gr_color);
+        arb_write = arb_write | (gr_gnt & gr_write);
+    end
+
+    // Who drives the VGA adapter (first match wins):
+    //   game over state             -> game over screen
+    //   scene not finished drawing  -> scene_draw
+    //   otherwise                   -> whoever the arbiter granted (nobody = no write)
+    wire sel_go    = in_over;
+    wire sel_scene = in_play & ~sc_done;
+
+    wire [7:0] adp_x = sel_go ? go_x : (sel_scene ? sc_x : arb_x);
+    wire [6:0] adp_y = sel_go ? go_y : (sel_scene ? sc_y : arb_y);
+    wire [COLOR_DEPTH-1:0] adp_color = sel_go ? go_color : (sel_scene ? sc_color : arb_color);
+    wire adp_write = sel_go ? go_write : (sel_scene ? sc_write : arb_write);
+
+    vga_adapter VGA (
+            .resetn(Resetn),
+            .clock(CLOCK_50),
+            .color(adp_color),
+            .x(adp_x),
+            .y(adp_y),
+            .write(adp_write),
+            .VGA_R(VGA_R),
+            .VGA_G(VGA_G),
+            .VGA_B(VGA_B),
+            .VGA_HS(VGA_HS),
+            .VGA_VS(VGA_VS),
+            .VGA_BLANK_N(VGA_BLANK_N),
+            .VGA_SYNC_N(VGA_SYNC_N),
+            .VGA_CLK(VGA_CLK));
+        defparam VGA.RESOLUTION = RESOLUTION;
+        defparam VGA.BACKGROUND_IMAGE = "./MIF/background.mif";
+        defparam VGA.COLOR_DEPTH = COLOR_DEPTH;
+
+endmodule
+
+// give access to the VGA write port to one module at a time. a grant is held until the owner drops its request. if the bus is free and
+// several ask at once, the LOWEST index wins (index 0 = player).
+module vga_arbiter (clock, resetn, req, gnt);
+    parameter N = 8;
+    input wire clock, resetn;
+    input wire [N-1:0] req;
+    output wire [N-1:0] gnt;
+
+    reg [N-1:0] owner;   // one-hot: which requester owns the bus, all zeros = nobody
+
+    // keeps only the lowest set bit of req (0 if nobody asks)
+    wire [N-1:0] pick = req & (~req + 1'b1);
+
+    always @(posedge clock)
+        if (!resetn)
+            owner <= {N{1'b0}};
+        else if (|(owner & req))
+            owner <= owner;         // owner still wants the bus: keep it
+        else
+            owner <= pick;          // bus free: grant the highest priority requester
+
+    assign gnt = owner;
+endmodule
+
+// gives a one-clock start pulse every 2^29 clocks ( ~10.7 s at 50 MHz).
+// INIT is the value the counter starts from after reset, so a bigger INIT means the first pulse
+// comes sooner. The pulse is skipped if the bird is still busy.
+module spawn_timer (clock, resetn, busy, start);
+    parameter N = 29;
+    parameter [N-1:0] INIT = 0;
+    input wire clock, resetn, busy;
+    output wire start;
+
+    reg [N-1:0] count;
+    always @(posedge clock)
+        if (!resetn)
+            count <= INIT;
+        else
+            count <= count + 1'b1;
+
+    assign start = (count == {N{1'b1}}) & ~busy;
+endmodule
+
+// slides the ground off the bottom of the screen
+// scene_draw paints the ground once; this module then erases it one row at a time,
+// top row first. ground runs from Y_START to the bottom edge, so nothing is
+// ever drawn under it. never writes inside the player box.
+module ground_fall (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, done, obj_y, avoid_x, avoid_y);
+    parameter nX = 8;
+    parameter nY = 7;
+    parameter XSCREEN = 160;
+    parameter YSCREEN = 120;
+    parameter [6:0] Y_START = 7'd112;   // first row of the ground
+    parameter KK = 21;                  // step period = 2^KK clocks (smaller = faster)
+    parameter [2:0] sky_color = 3'b001;
+
+    parameter S_INIT       = 3'd0,
+              S_WAIT       = 3'd1,
+              S_REQ        = 3'd2,
+              S_ERASE      = 3'd3,
+              S_ERASE_NEXT = 3'd4,
+              S_MOVE       = 3'd5,
+              S_CHECK      = 3'd6,
+              S_DONE       = 3'd7;
+
+    input wire resetn, clock, gnt;
+    output reg req;
+    output wire [7:0] VGA_x;
+    output wire [6:0] VGA_y;
+    output wire [2:0] VGA_color;
+    output wire VGA_write;
+    output wire done;                   // 1 once the ground has left the screen
+    output wire [6:0] obj_y;            // current top row of the ground
+    input wire [7:0] avoid_x;           // player position (box is +/-5 wide, +/-6 tall)
+    input wire [6:0] avoid_y;
+
+    wire [7:0] XC;                      // column being erased
+    wire [6:0] Y;                       // top row of the ground
+    wire [KK-1:0] slow;
+    wire sync;
+
+    reg Ey, Ly, Exc, Lxc;
+    reg write;
+    reg [2:0] y_Q, Y_D;
+
+    assign obj_y = Y;
+    assign done  = (y_Q == S_DONE);
+
+    assign VGA_x     = XC;
+    assign VGA_y     = Y;
+    assign VGA_color = sky_color;
+
+    // skip pixels inside the player's box 
+    wire in_player = (XC + 5 >= avoid_x) && (XC <= avoid_x + 5) &&
+                     (Y + 6 >= avoid_y) && (Y <= avoid_y + 6);
+
+    assign VGA_write = write & ~in_player;
+
+    UpDn_count U1 (Y_START, clock, resetn, Ey, Ly, 1'b1, Y);
+        defparam U1.n = nY;
+    UpDn_count U3 ({nX{1'b0}}, clock, resetn, Exc, Lxc, 1'b1, XC);
+        defparam U3.n = nX;
+
+    Up_count U6 (clock, resetn, slow);
+        defparam U6.n = KK;
+    assign sync = (slow == {KK{1'b1}});
+
+    // next state
+    always @(*)
+        case (y_Q)
+            S_INIT:       Y_D = S_WAIT;
+            S_WAIT:       Y_D = sync ? S_REQ : S_WAIT;                       // wait for next step
+            S_REQ:        Y_D = gnt ? S_ERASE : S_REQ;                       // wait for the bus
+            S_ERASE:      Y_D = (XC != XSCREEN-1) ? S_ERASE : S_ERASE_NEXT;  // erase the row
+            S_ERASE_NEXT: Y_D = S_MOVE;
+            S_MOVE:       Y_D = S_CHECK;
+            S_CHECK:      Y_D = (Y >= YSCREEN) ? S_DONE : S_WAIT;            // off screen = finished
+            S_DONE:       Y_D = S_DONE;
+            default:      Y_D = S_INIT;
+        endcase
+
+    // outputs
+    always @(*) begin
+        Ey = 1'b0; Ly = 1'b0; Exc = 1'b0; Lxc = 1'b0;
+        write = 1'b0; req = 1'b0;
+        case (y_Q)
+            S_INIT:       begin Ly = 1'b1; Lxc = 1'b1; end                   // load start row, column 0
+            S_REQ:        req = 1'b1;
+            S_ERASE:      begin req = 1'b1; Exc = 1'b1; write = 1'b1; end
+            S_ERASE_NEXT: begin req = 1'b1; Lxc = 1'b1; end                  // back to column 0
+            S_MOVE:       begin req = 1'b1; Ey = 1'b1; end                   // top row moves down one
+            default: ;
+        endcase
+    end
+
+    always @(posedge clock)
+        if (!resetn) y_Q <= S_INIT;
+        else         y_Q <= Y_D;
+endmodule
+
+// one platform that falls, disappears at the bottom and restarts from the top
+// first run starts at Y_INIT (so platforms are staggered), later runs start at 0
+// plat_x / plat_y give platform's left edge and top row
+module plat_loop (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, avoid_x, avoid_y, plat_x, plat_y);
+    parameter [7:0] X_POS  = 8'd70;
+    parameter [6:0] Y_INIT = 7'd0;
+    parameter KK = 21;
+    parameter [2:0] sky_color = 3'b001;
+    parameter Y_END = 120;
+
+    input wire resetn, clock, gnt;
+    output wire req;
+    output wire [7:0] VGA_x;
+    output wire [6:0] VGA_y;
+    output wire [2:0] VGA_color;
+    output wire VGA_write;
+    input wire [7:0] avoid_x;
+    input wire [6:0] avoid_y;
+    output wire [7:0] plat_x;
+    output wire [6:0] plat_y;
+
+    wire done, busy;
+    wire [7:0] obj_x;
+    wire [6:0] obj_y;
+
+    reg first;   // 1 until the first fall has finished
+    always @(posedge clock)
+        if (!resetn)
+            first <= 1'b1;
+        else if (done)
+            first <= 1'b0;
+
+    // start is tied to 1, ie whenever the platform is idle it immediately starts the next fall
+    platform #(.KK(KK), .sky_color(sky_color), .Y_END(Y_END)) P (
+        resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write,
+        1'b1, done, busy, X_POS, (first ? Y_INIT : 7'd0), obj_x, obj_y, avoid_x, avoid_y);
+
+    assign plat_x = obj_x;
+    assign plat_y = obj_y;
+endmodule
+
+
+// Y_END is row where it stops, avoid_x/avoid_y so it never writes inside the player box.
+// rows at or below YSCREEN are outside the frame buffer, so they are never written thats why it is safe
+module platform (resetn, clock, gnt, req, VGA_x, VGA_y, VGA_color, VGA_write, start, done, busy, x_in, y_in, obj_x, obj_y, avoid_x, avoid_y);
+
+    parameter RESOLUTION = "160x120";
+    parameter nX = 8;
+    parameter nY = 7;
+    parameter COLOR_DEPTH = 3;
+    parameter XSCREEN = 160;
+    parameter YSCREEN = 120;
+    parameter XDIM = 20, YDIM = 4; // object's width and height
+    parameter sky_color = 3'b001;
+    parameter KK = 24; // controls animation speed (use 16 for DESim, 5 for ModelSim)
+    parameter Y_END = 116;   // when Y reaches this row the platform is done (erased, no redraw)
+
+    // state codes
+    parameter A = 4'b0000,
+              B = 4'b0001,
+              C = 4'b0010,
+              D = 4'b0011,
+              E = 4'b0100,
+              F = 4'b0101,
+              G = 4'b0110,
+              H = 4'b0111,
+              I = 4'b1000,
+              J = 4'b1001,
+              K = 4'b1010,
+              L = 4'b1011,
+              M = 4'b1100, //done
+              N = 4'b1101; //wait for grant before the first draw
+
+    input wire gnt;
+    output reg req;
+    input wire start;
+    input wire [nX-1:0] x_in;      // column for this fall (sampled when start = 1)
+    input wire [nY-1:0] y_in;      // row to start from (sampled when start = 1)
+    output wire busy;              // 1 from start until the FSM is idle again
+    output wire [nX-1:0] obj_x;    // current position (valid while busy, holds last value after)
+    output wire [nY-1:0] obj_y;
+    output reg done;
+    input wire resetn, clock;
+    output wire [7:0] VGA_x;
+    output wire [6:0] VGA_y;
+    output wire [2:0] VGA_color;
+    output wire VGA_write;
+
+    input wire [7:0] avoid_x;   // player box to avoid
+    input wire [6:0] avoid_y;
+
+    wire [7:0] X, XC, X0;    // used to traverse the object's width
+    wire [6:0] Y, YC, Y0;    // used to traverse the object's height
+    wire [KK-1:0] slow;     // used to synchronize the object's speed using a counter
+
+    reg Lx, Ly, Ey, Lxc, Lyc, Exc, Eyc; // load and enable signals for the object's
+                                        // location (x,y) and the counters that traverse
+                                        // the object's pixels (XC, YC)
+    wire sync;    // sync is for the slow counter
+    reg erase;    // erase is used to erase the object
+    reg [3:0] y_Q, Y_D; // FSM for controlling drawing/erasing of the object
+    reg write;          // used to write to a pixel
+
+    //platform colour
+
+    wire is_green = ( YC == 0 && XC >= 0 && XC <= 19 )
+                    || ( YC == 1 && XC >= 2 && XC <= 17 )
+                    || ( YC == 2 && (XC >= 5 && XC <= 14) )
+                    || ( YC == 3 && XC >= 7 && XC <= 12 );
+    wire px_solid = is_green;
+    wire [2:0] px_color = 3'b010;
+
+    assign X0 = x_in;
+    assign Y0 = y_in;
+
+    assign busy  = (y_Q != A);
+    assign obj_x = X;
+    assign obj_y = Y;
+
+    wire [7:0] px = X + XC;                         // pixel x coordinate
+    wire [6:0] py = Y + YC;                         // pixel y coordinate
+    assign VGA_x = px;
+    assign VGA_y = py;
+    assign VGA_color = erase == 0 ? px_color : sky_color;    // pixel color to draw/erase
+
+    // never write inside the player's box
+    wire signed [9:0] spx = {2'b00, px};
+    wire signed [9:0] spy = {3'b000, py};
+    wire signed [9:0] sax = {2'b00, avoid_x};
+    wire signed [9:0] say = {3'b000, avoid_y};
+    wire in_player = (spx >= sax - 5) && (spx <= sax + 5) &&
+                     (spy >= say - 6) && (spy <= say + 6);
+
+    // rows past the bottom of the screen are not written
+    assign VGA_write = write & ~in_player & (py < YSCREEN);
+
+    // X does not move
+    UpDn_count U2 (X0, clock, resetn, 1'b0, Lx, 1'b0, X);
+        defparam U2.n = nX;
+
+    // Y moves down
+    UpDn_count U1 (Y0, clock, resetn, Ey, Ly, 1'b1, Y);
+        defparam U1.n = nY;
+
+    // pixel counters walk through the sprite box
+    UpDn_count U3 ({nX{1'b0}}, clock, resetn, Exc, Lxc, 1'b1, XC);
+        defparam U3.n = nX;
+
+    UpDn_count U4 ({nY{1'b0}}, clock, resetn, Eyc, Lyc, 1'b1, YC);
+        defparam U4.n = nY;
+
+    // speed counter
+    Up_count U6 (clock, resetn, slow);
+        defparam U6.n = KK;
+    assign sync = (slow == {KK{1'b1}});
+
+    // FSM Algorithm:
+    // 1. draw object
+    // 2. wait for object's delay time
+    // 3. request to draw, wait for grant
+    // 4. erase object (maintain request)
+    // 5. move object, check for boundary conditions (maintain request)
+    // 6. draw object (maintain request)
+    // 7. release request, goto 2.
+
+    always @ (*)
+        case (y_Q)
+            A:  if (start) Y_D = N; else Y_D = A;                    // initialize counters, registers
+
+            N:  if (!gnt) Y_D = N;              // wait for VGA grant before the first draw
+                else Y_D = B;
+
+            B:  if (XC != XDIM-1) Y_D = B;      // initial draw, done once
+                else Y_D = C;
+            C:  if (YC != YDIM-1) Y_D = B;
+                else Y_D = D;
+
+            D:  if (!sync) Y_D = D;             // wait for object's delay time
+                else Y_D = E;
+            E:  if (!gnt) Y_D = E;              // wait for VGA grant
+                else Y_D = F;
+
+            F:  if (XC != XDIM-1) Y_D = F;      // erase object
+                else Y_D = G;
+            G:  if (YC != YDIM-1) Y_D = F;
+                else Y_D = H;
+
+            H:  if (Y >= Y_END) Y_D = M;        // reached the bottom: stay erased and finish
+            else Y_D = I;                      // move the object
+            I:  Y_D = J;
+
+            J:  if (XC != XDIM-1) Y_D = J;      // draw the object
+                else Y_D = K;
+            K:  if (YC != YDIM-1) Y_D = J;
+                else Y_D = L;
+            L:  Y_D = D;
+
+            M: Y_D = A;
+
+            default: Y_D = A;
+        endcase
+
+    always @ (*)
+    begin
+        // default assignments
+        Lx = 1'b0; Ly = 1'b0; Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; done = 1'b0;
+        erase = 1'b0; write = 1'b0; Ey = 1'b0; req = 1'b0;
+        case (y_Q)
+            A:  begin Lx = start; Ly = start; Lxc = 1'b1; Lyc = 1'b1; end // load position only on start
+
+            N:  req = 1'b1; // request the adapter for the first draw
+
+            B:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end   // color a pixel, incr XC
+            C:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end     // reload XC, incr YC
+
+            D:  Lyc = 1'b1; // reload YC
+            E:  req = 1'b1; // request a drawing cycle
+
+            // erase the object
+            F:  begin req = 1'b1; Exc = 1'b1; erase = 1'b1; write = 1'b1; end
+            G:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+
+            H:  begin req = 1'b1; Lyc = 1'b1; end
+
+            // move the object
+            I:  begin req = 1'b1; Ey = 1'b1; end
+
+            // draw the object
+            J:  begin req = 1'b1; Exc = 1'b1; write = px_solid; end
+            K:  begin req = 1'b1; Lxc = 1'b1; Eyc = 1'b1; end
+            L:  Lyc = 1'b1; // reload YC, and release the request
+
+            M: begin done = 1'b1; end
+        endcase
+    end
+
+    // FSM FFs
+    always @(posedge clock)
+        if (resetn == 0)
+            y_Q <= A;
+        else
+            y_Q <= Y_D;
+
+endmodule
