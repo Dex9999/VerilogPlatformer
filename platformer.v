@@ -182,8 +182,10 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
     //   scene not finished drawing  -> scene_draw
     //   arbiter granted the bird    -> bird
     //   arbiter granted the player  -> player
-	 wire sel_go    = sw_over;
-    wire sel_scene = ~sw_over & ~sc_done;
+
+	
+	wire sel_go    = in_over;
+    wire sel_scene = (in_idle | in_play) & ~sc_done;
 
     wire [7:0] adp_x = sel_go ? go_x : (sel_scene ? sc_x : (bird_gnt ? bird_x : player_x));
     wire [6:0] adp_y = sel_go ? go_y : (sel_scene ? sc_y : (bird_gnt ? bird_y : player_y));
@@ -1695,12 +1697,24 @@ module platformer(CLOCK_50, KEY, SW, LEDR, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, 
         else
             y_Q <= Y_D;
 
+	//count 16 bit number while the scene is allowed to be painted and then freeze
+	reg [16:0] idle_cnt;
+	
+    always @(posedge CLOCK_50)
+        if (!in_idle || !sc_done)
+            idle_cnt <= 17'd0;
+        else if (!idle_cnt[16])
+            idle_cnt <= idle_cnt + 1'b1;
+
+    wire show_frame = in_idle & sc_done & ~idle_cnt[16];
+    wire run_objects = in_play | show_frame;
     // resets: each module only runs in the play state, after the background is painted
-    wire scene_resetn    = Resetn & in_play;
-    wire bird_resetn     = Resetn & in_play & sc_done;
-    wire player_resetn   = Resetn & in_play & sc_done;
-    wire platform_resetn = Resetn & in_play & sc_done;
-    wire ground_resetn   = Resetn & in_play & sc_done;
+    // scene is painted in IDLE and stays painted into GAME_ON
+    wire scene_resetn    = Resetn & (in_idle | in_play);
+    wire bird_resetn     = Resetn & run_objects & sc_done;
+    wire player_resetn   = Resetn & run_objects & sc_done;
+    wire platform_resetn = Resetn & run_objects & sc_done;
+    wire ground_resetn   = Resetn & run_objects & sc_done;
 
     // scene painter (sky + ground only)
     scene_draw #(.GROUND_Y(GROUND_Y), .BG_COLOR(BG_COLOR), .GROUND_COLOR(GROUND_COLOR),
