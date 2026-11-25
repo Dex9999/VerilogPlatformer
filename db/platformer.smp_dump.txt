@@ -1,4 +1,140 @@
 
+State Machine - |platformer|y_Q
+Name y_Q.IDLE y_Q.GAME_OVER y_Q.GAME_ON 
+y_Q.IDLE 0 0 0 
+y_Q.GAME_ON 1 0 1 
+y_Q.GAME_OVER 1 1 0 
+
+State Machine - |platformer|ground_fall:GROUND|y_Q
+Name y_Q.S_DONE y_Q.S_CHECK y_Q.S_MOVE y_Q.S_ERASE_NEXT y_Q.S_ERASE y_Q.S_REQ y_Q.S_WAIT y_Q.S_INIT 
+y_Q.S_INIT 0 0 0 0 0 0 0 0 
+y_Q.S_WAIT 0 0 0 0 0 0 1 1 
+y_Q.S_REQ 0 0 0 0 0 1 0 1 
+y_Q.S_ERASE 0 0 0 0 1 0 0 1 
+y_Q.S_ERASE_NEXT 0 0 0 1 0 0 0 1 
+y_Q.S_MOVE 0 0 1 0 0 0 0 1 
+y_Q.S_CHECK 0 1 0 0 0 0 0 1 
+y_Q.S_DONE 1 0 0 0 0 0 0 1 
+
+State Machine - |platformer|plat_loop:MP4|platform:P|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|plat_loop:MP3|platform:P|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|plat_loop:MP2|platform:P|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|plat_loop:MP1|platform:P|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|plat_loop:MP0|platform:P|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|bird_right:BIRD_R|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |platformer|bird_left:BIRD_L|y_Q
+Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
+y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
 State Machine - |platformer|PS2_Controller:PS2|s_ps2_transceiver
 Name s_ps2_transceiver.PS2_STATE_3_END_TRANSFER s_ps2_transceiver.PS2_STATE_2_COMMAND_OUT s_ps2_transceiver.PS2_STATE_1_DATA_IN s_ps2_transceiver.PS2_STATE_0_IDLE s_ps2_transceiver.PS2_STATE_4_END_DELAYED 
 s_ps2_transceiver.PS2_STATE_0_IDLE 0 0 0 0 0 
@@ -26,25 +162,8 @@ s_ps2_receiver.PS2_STATE_2_DATA_IN 0 1 0 1 0
 s_ps2_receiver.PS2_STATE_3_PARITY_IN 1 0 0 1 0 
 s_ps2_receiver.PS2_STATE_4_STOP_IN 0 0 0 1 1 
 
-State Machine - |platformer|bird_left:BIRD|y_Q
-Name y_Q.N y_Q.M y_Q.L y_Q.K y_Q.J y_Q.I y_Q.H y_Q.G y_Q.F y_Q.E y_Q.D y_Q.C y_Q.B y_Q.A 
-y_Q.A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-y_Q.B 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
-y_Q.C 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
-y_Q.D 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
-y_Q.E 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
-y_Q.F 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
-y_Q.G 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
-y_Q.H 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
-y_Q.I 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
-y_Q.J 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
-y_Q.K 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
-y_Q.L 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
-y_Q.M 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
-y_Q.N 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
-
-State Machine - |platformer|vga_arbiter:ARB|owner
-Name owner.00 owner.10 owner.01 
-owner.00 0 0 0 
-owner.01 1 0 1 
-owner.10 1 1 0 
+State Machine - |platformer|avconf:AVC|mSetup_ST
+Name mSetup_ST.0000 mSetup_ST.0010 mSetup_ST.0001 
+mSetup_ST.0000 0 0 0 
+mSetup_ST.0001 1 0 1 
+mSetup_ST.0010 1 1 0 
